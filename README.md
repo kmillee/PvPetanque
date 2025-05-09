@@ -1,1 +1,1 @@
-# PvPetanque
+# PvPétanque

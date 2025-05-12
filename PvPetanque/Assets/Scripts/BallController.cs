@@ -36,17 +36,29 @@ public class BallThrower : MonoBehaviour
     {
         line.enabled = true;
         Vector3 origin = transform.position;
+
         float elevationRad = Mathf.Deg2Rad * currentAngle;
         Vector3 dir3D = launchDirection * Mathf.Cos(elevationRad) + Vector3.up * Mathf.Sin(elevationRad);
-        Vector3 velocity = dir3D * launchForce * maxForce;
+
+        //acount for mass
+        float mass = rb.mass;
+        Vector3 impulse = dir3D * launchForce * maxForce;
+        Vector3 velocity = impulse / mass; 
 
         float timeStep = 0.1f;
-        for (int i = 0; i < line.positionCount; i++)
+        float totalTime = (2 * velocity.y) / -Physics.gravity.y; // basic projectile time
+
+        // draw the size according to the time of flight
+        int points = Mathf.Clamp(Mathf.CeilToInt(totalTime / timeStep), 2, 100);
+        line.positionCount = points;
+
+        for (int i = 0; i < points; i++)
         {
             float t = i * timeStep;
             Vector3 pos = origin + velocity * t + Physics.gravity * t * t / 2f;
             line.SetPosition(i, pos);
         }
+
     }
 
     void clearPreview()
@@ -61,7 +73,8 @@ public class BallThrower : MonoBehaviour
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        rb.AddForce(dir3D * launchForce * maxForce, ForceMode.Impulse);
+        rb.AddForce(dir3D * launchForce * maxForce, ForceMode.Impulse); // velocity = impulse / mass
+        // rb.linearVelocity = (dir3D * launchForce * maxForce) / rb.mass; // velocity = impulse / mass
         thrown = true;
 
         // -- Spawn a new ball --

@@ -13,42 +13,48 @@ public class MeshGenerator : MonoBehaviour
     public int width=10; // In world unit
     public int length=10; // In world unit
     public int resolution=5; // Number of segments along each axis
+    public float maxHeight = 0.5f; // Maximum height of the mesh
+    public int seed = 143;
+
+    private Vector2 noiseOffset;
 
     void Start()
     {
+        Random.InitState(seed);
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
+        noiseOffset = new Vector2(Random.value * 1000f, Random.value * 1000f);
         CreateShape();
         UpdateMesh();
     }
 
     void CreateShape()
     {
-     int resX = width * resolution;
-     int resZ = length * resolution;
+         int resX = width * resolution;
+         int resZ = length * resolution;
 
-    vertices = new Vector3[(resX + 1) * (resZ + 1)];
-        triangles = new int[resX * resZ * 6];
+        vertices = new Vector3[(resX + 1) * (resZ + 1)];
+         triangles = new int[resX * resZ * 6];
 
-        // Generate vertex positions
-        for(int x = 0; x <= resX; x++)
+        // Generate vertex positions -> height based on perlin noise
+        for (int x = 0; x <= resX; x++)
         {
             for(int z = 0; z <= resZ; z++)
             {
                 // Convert vertex world-space from grid coordinates 
-                float xPos = (float)x / resolution;
-                float zPos = (float)z / resolution;
+                float xPos = (float)x / (float)resolution;
+                float zPos = (float)z / (float)resolution;
 
                 // Sample perlin noise to get bumpiness
-                float yPos = Mathf.PerlinNoise(xPos, zPos);
+                float yPos = Mathf.PerlinNoise(xPos + noiseOffset.x, zPos + noiseOffset.y) * maxHeight;
 
                 // Set vertex position
                 vertices[x + z * (resX + 1)] = new Vector3(xPos, yPos, zPos);
             }
         }
 
-        // Generate triangle indices
+        // Generate triangle indices 
         int vert = 0;
         for (int x = 0; x < resX; x++)
         {

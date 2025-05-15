@@ -74,8 +74,13 @@ public class BallThrower : MonoBehaviour
         rb.useGravity = true;
 
         rb.AddForce(dir3D * launchForce * maxForce, ForceMode.Impulse); // velocity = impulse / mass
-        // rb.linearVelocity = (dir3D * launchForce * maxForce) / rb.mass; // velocity = impulse / mass
         thrown = true;
+
+        // end turn, update game state (maybe do it once the ball is stopped)
+        // -- Update game state --
+        GameManager gm = FindObjectOfType<GameManager>();
+        gm.NextTurn();
+        gm.DetermineClosestBall();
 
         // -- Spawn a new ball --
         var spawner = FindFirstObjectByType<BallSpawner>();

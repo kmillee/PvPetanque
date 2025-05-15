@@ -76,6 +76,7 @@ public class MeshGenerator : MonoBehaviour
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        GetComponent<MeshCollider>().sharedMesh = mesh;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
     }

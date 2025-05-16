@@ -792,7 +792,8 @@ MonoBehaviour:
   teamAScoreText: {fileID: 242944296}
   teamBScoreText: {fileID: 1819378890}
   currentPlayerText: {fileID: 1531114252}
-  distanceText: {fileID: 759586190}
+  currentDistanceText: {fileID: 343406719}
+  bestDistanceText: {fileID: 759586190}
   teamABalls: []
   teamBBalls: []
   maxBallsPerTeam: 6

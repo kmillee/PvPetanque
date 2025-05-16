@@ -12,21 +12,30 @@ public class BallSpawner : MonoBehaviour
     
     void Start()
     {
-        //spawnCochonnet();
-        //spawnBall();
+ 
     }
+
+
     public void spawnBall()
     {
-        Instantiate(ballPrefab, spawnPoint.position, Quaternion.identity);
-        Ball ballScript = ballPrefab.GetComponent<Ball>(); 
-        // Set the material based on the team
-        if (ballScript.team == Team.TeamA)
-            ballPrefab.GetComponent<Renderer>().material = teamAMaterial;
-        else{
-            ballPrefab.GetComponent<Renderer>().material = teamBMaterial;
-        }
+        GameObject newBall = Instantiate(ballPrefab, spawnPoint.position, Quaternion.identity);
+        Ball ballScript = newBall.GetComponent<Ball>();
 
+        // Set team before assigning material
+        ballScript.team = GameManager.instance.currentTeam;
+
+        Renderer renderer = newBall.GetComponent<Renderer>();
+        if (ballScript.team == Team.TeamA)
+        {
+            renderer.material = teamAMaterial;
+        }
+        else
+        {
+            renderer.material = teamBMaterial;
+        }
+        
     }
+
 
     public void spawnCochonnet()
     {

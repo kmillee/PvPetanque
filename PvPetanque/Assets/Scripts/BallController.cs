@@ -87,6 +87,7 @@ public class BallThrower : MonoBehaviour
         rb.AddForce(dir3D * launchForce * maxForce, ForceMode.Impulse);
         thrown = true;
 
+        
         gm.WaitAndProceedToNextTurn();
 
     }

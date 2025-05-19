@@ -256,6 +256,59 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &287472208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 287472210}
+  - component: {fileID: 287472209}
+  m_Layer: 0
+  m_Name: Obstacle Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &287472209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287472208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6250d742afda7ab4c80f27821ed5fa3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacles:
+  - {fileID: 919132149155446097, guid: 44dc425335fdea44cbf31ebccc90ef8c, type: 3}
+  - {fileID: 919132149155446097, guid: 22c7cf1dd3a794a46b1d800a34d880dd, type: 3}
+  - {fileID: 919132149155446097, guid: aa6beadd1e5bca944ac45160153c5d30, type: 3}
+  - {fileID: 919132149155446097, guid: 7fcbe07ae8993914d8359a34460b40de, type: 3}
+  - {fileID: 919132149155446097, guid: 988b8b3b52b09a74f9db9350c61edbc2, type: 3}
+  - {fileID: 919132149155446097, guid: 079c048d0750a6341be30a2cc6a3cca2, type: 3}
+  meshCollider: {fileID: 1115537187}
+  seed: 143
+--- !u!4 &287472210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287472208}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1115537182
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,8 +320,8 @@ GameObject:
   - component: {fileID: 1115537186}
   - component: {fileID: 1115537185}
   - component: {fileID: 1115537184}
-  - component: {fileID: 1115537183}
   - component: {fileID: 1115537187}
+  - component: {fileID: 1115537183}
   m_Layer: 0
   m_Name: Mesh Generator
   m_TagString: Untagged
@@ -511,3 +564,4 @@ SceneRoots:
   - {fileID: 1611539128}
   - {fileID: 126778934}
   - {fileID: 1115537186}
+  - {fileID: 287472210}

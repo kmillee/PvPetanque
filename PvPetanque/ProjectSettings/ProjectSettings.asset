@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 03ae4a4a2d32b3e41978c08263a12eb6
+  productGUID: 0c89242b81529174aaffdc79fc0bb336
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -915,11 +915,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: f43ecb24-b5ec-425b-a797-07f4d122fa93
+  cloudProjectId: cc637900-138b-4b63-8aae-0deff70e192e
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: PvPetanque 2025-05-09_15-59-42
-  organizationId: stelfish
+  projectName: PvPetanque
+  organizationId: vietswagg
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

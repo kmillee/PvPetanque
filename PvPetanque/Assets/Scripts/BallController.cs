@@ -1,10 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using System.Collections.Generic;
+
 
 public class BallThrower : MonoBehaviour
 {
     private Rigidbody rb;
+    private GameManager gm;
+    public GameObject cochonnet; // assign in Inspector or dynamically
+
 
     [Header("Angle settings")]
     public int minAngle = 0;
@@ -23,6 +29,10 @@ public class BallThrower : MonoBehaviour
     private float launchForce;
 
     private LineRenderer line; 
+
+    public TextMeshProUGUI distanceText; // UI element to display distance
+
+
 
     void handleAngleInput()
     {
@@ -66,6 +76,7 @@ public class BallThrower : MonoBehaviour
         line.enabled = false;
     }
 
+
     void LaunchBall()
     {
         float elevationRad = Mathf.Deg2Rad * currentAngle;
@@ -73,21 +84,15 @@ public class BallThrower : MonoBehaviour
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        rb.AddForce(dir3D * launchForce * maxForce, ForceMode.Impulse); // velocity = impulse / mass
-        // rb.linearVelocity = (dir3D * launchForce * maxForce) / rb.mass; // velocity = impulse / mass
+        rb.AddForce(dir3D * launchForce * maxForce, ForceMode.Impulse);
         thrown = true;
 
-        // -- Spawn a new ball --
-        var spawner = FindFirstObjectByType<BallSpawner>();
-        if (spawner != null)
-        {
-            spawner.Invoke(nameof(spawner.spawnBall), 1f); // small delay
-        }
-        else
-        {
-            Debug.LogWarning("No BallSpawner found in the scene.");
-        }
+        
+        gm.WaitAndProceedToNextTurn();
+
     }
+
+
 
     // ---- Mouse callbacks ----
     void OnMouseDown()
@@ -120,9 +125,10 @@ public class BallThrower : MonoBehaviour
         isDragging = false;
         clearPreview();
         LaunchBall();
+
     }
 
-    
+
     void Awake()
     {
         line = GetComponent<LineRenderer>();
@@ -130,11 +136,18 @@ public class BallThrower : MonoBehaviour
         line.positionCount = 10;
         line.enabled = false;
         print("BallThrower started");
+        
+        gm = FindObjectOfType<GameManager>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        // display distance ball-cochonnet
+        float distance = Vector3.Distance(transform.position, gm.cochonnet.transform.position);
+        gm.currentDistanceText.text = $"Distance: {distance:F2} m";
+        gm.DetermineClosestBall();
         if (thrown) return;
         handleAngleInput();
     }

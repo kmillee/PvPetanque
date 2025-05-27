@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
 
 
 public enum RoundPhase //should add draw phase maybe (or will be done in the menu)
@@ -51,8 +52,16 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
-        instance = this;
-    }
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this); // persist from menu to game scene
+        }
+        else
+        {
+            Destroy(this); // Prevent duplicates
+        }
+    }    
 
     private void Start()
     {
@@ -278,6 +287,11 @@ public class GameManager : MonoBehaviour
     {
         regularUI.SetActive(false);
         endGameUI.SetActive(true);
+    }
+
+    public void changeToMenu()
+    {
+        SceneManager.LoadScene("MenuScene");
     }
 
     public void RestartGame()

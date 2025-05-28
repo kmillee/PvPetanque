@@ -4,7 +4,7 @@ public class ObstacleSpawner : MonoBehaviour
 {
 
     public GameObject[] obstacles; // Array of obstacle prefabs
-    int obstacleCount = 10; // Number of obstacles to spawn
+    public int obstacleCount = 10; // Number of obstacles to spawn
     public MeshCollider meshCollider; // MeshCollider component for the terrain
     public int seed = 143; // Seed for random number generation
 
@@ -60,9 +60,9 @@ public class ObstacleSpawner : MonoBehaviour
                 // Scale down obstacle
                 float randomScale = 1f;
                 if (obstaclePrefab.name.Contains("Stick")) {
-                    randomScale = Random.Range(0.01f, 0.05f);
+                    randomScale = Random.Range(0.005f, 0.01f);
                 } else {
-                    randomScale = Random.Range(0.05f, 0.1f);
+                    randomScale = Random.Range(0.01f, 0.1f);
                 }
 
                 obstacle.transform.localScale = new Vector3(randomScale, randomScale, randomScale);

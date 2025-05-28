@@ -47,7 +47,7 @@ public class ObstacleSpawner : MonoBehaviour
             // Find ground position
             if(Physics.Raycast(worldXZ, Vector3.down, out hit, height)){
                 Collider collider = obstaclePrefab.GetComponent<Collider>();
-                Vector3 randomPosition = new Vector3(hit.point.x, hit.point.y + 1f, hit.point.z);
+                Vector3 randomPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
                 
                 // Randomly rotate the obstacle in all axis
                 float randomXRotation = Random.Range(0f, 360f);
@@ -57,12 +57,37 @@ public class ObstacleSpawner : MonoBehaviour
 
                 GameObject obstacle = Instantiate(obstaclePrefab, randomPosition, randomRotation);
 
-                // Scale down the obstacle
-                float randomScale = Random.Range(0.05f, 0.1f);
+                // Scale down obstacle
+                float randomScale = 1f;
+                if (obstaclePrefab.name.Contains("Stick")) {
+                    randomScale = Random.Range(0.01f, 0.05f);
+                } else {
+                    randomScale = Random.Range(0.05f, 0.1f);
+                }
+
                 obstacle.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
 
-                obstacle.transform.SetParent(transform, true);
+                // Adjust y position based on longest axis
+                float longestAxis = Mathf.Max(obstacle.transform.localScale.x, obstacle.transform.localScale.y, obstacle.transform.localScale.z);
+                obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y + longestAxis + 1f, obstacle.transform.position.z);
 
+                // ------- Physics Setup -------
+                // Add Rigidbody component
+                Rigidbody rb = obstacle.GetComponent<Rigidbody>();
+                if (rb == null)
+                {
+                    rb = obstacle.AddComponent<Rigidbody>();
+                }
+                rb.useGravity = true; // Disable gravity for the obstacle
+
+                // Add a collider to the obstacle
+                if (obstacle.GetComponent<Collider>() == null)
+                {
+                    obstacle.AddComponent<BoxCollider>();
+                }
+
+
+                obstacle.transform.SetParent(transform, true);
             }
         }
     }

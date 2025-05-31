@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public BallSpawner ballSpawner; //reference to the ball spawner
 
     // UI elements 
+    public TextMeshProUGUI teamANameText; // Text element for team A name
+    public TextMeshProUGUI teamBNameText; // Text element for team B name
     public GameObject endGameUI; // UI element to show at the end of the game
     public GameObject regularUI; // UI element to show during the game
     public TextMeshProUGUI winningTeamText;
@@ -44,7 +46,7 @@ public class GameManager : MonoBehaviour
     public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
     public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
     public int maxBallsPerTeam = 6; //max balls per team
-
+    public int TargetScore = 13;
     public Team currentTeam;
     private Ball closest; //closest ball to the cochonnet
 
@@ -66,8 +68,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // Initialize the game
+        teamANameText.text = $"{TeamData.GetTeamName(Team.TeamA)}";
+        teamBNameText.text = $"{TeamData.GetTeamName(Team.TeamB)}";
+
+        TargetScore = MatchSettingsData.goalScore;
         currentTeam = Team.TeamA; //start with team A
-        currentPlayerText.text = $"Current Turn: {currentTeam}";
+        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
         winningTeamText.text = "None";
 
         // Spawn the cochonnet
@@ -89,10 +95,12 @@ public class GameManager : MonoBehaviour
         cochonnet = null; // reset the cochonnet reference
 
         // Reset UI
-        teamABallsText.text = $"{teamABalls.Count} / {maxBallsPerTeam}";
-        teamBBallsText.text = $"{teamBBalls.Count} / {maxBallsPerTeam}";
+        teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
+        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
         winningTeamText.text = "None";
-        currentPlayerText.text = $"Current Turn: {currentTeam}";
+            
+        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
+
         teamAScoreText.text = $"{teamAScore}";
         teamBScoreText.text = $"{teamBScore}";
 
@@ -114,12 +122,12 @@ public class GameManager : MonoBehaviour
         if (ball.team == Team.TeamA)
         {
             teamABalls.Add(ball);
-            teamABallsText.text = $"{teamABalls.Count} / {maxBallsPerTeam}";
+            teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
         }
         else if (ball.team == Team.TeamB)
         {
             teamBBalls.Add(ball);
-            teamBBallsText.text = $"{teamBBalls.Count} / {maxBallsPerTeam}";
+            teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
         }
     }
 
@@ -142,7 +150,7 @@ public class GameManager : MonoBehaviour
                 closest = b;
 
                 bestDistanceText.text = $"Distance to beat: {dist:F2} m";
-                bestDistanceText.color = (b.team == Team.TeamA) ? Color.red : Color.blue; // color based on team
+                bestDistanceText.color = TeamData.GetUnityColor(b.team);
             }
         }
 
@@ -173,8 +181,8 @@ public class GameManager : MonoBehaviour
                     pointsThisRound++;
             }
         }
-
-        winningTeamText.text = $"{closest.team} ({pointsThisRound} pts)";
+        string teamName = TeamData.GetTeamName(closest.team);
+        winningTeamText.text = $"{teamName} ({pointsThisRound} pts)";
 
     }
 
@@ -189,7 +197,9 @@ public class GameManager : MonoBehaviour
         {
             roundPhase = RoundPhase.PlayerTurn;
             Debug.Log("Cochonnet thrown, now it's time for the players to play!");
-            currentPlayerText.text = $"Current Turn: {currentTeam}";
+            // currentPlayerText.text = currentTeam == Team.TeamA ? "Current Turn: Team A" : "Current Turn: Team B";
+            currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
+
             spawner.Invoke(nameof(spawner.spawnBall), 1f);
             return;
         }
@@ -205,23 +215,24 @@ public class GameManager : MonoBehaviour
             winningTeamText.text = $"Winning: {closest.team}";
             if (closest.team == Team.TeamA)
             {
-                teamAScore = Mathf.Min(teamAScore + pointsThisRound, 13);
+                teamAScore = Mathf.Min(teamAScore + pointsThisRound, TargetScore);
                 teamAScoreText.text = $"{teamAScore}";
             }
             else
             {
-                teamBScore = Mathf.Min(teamBScore + pointsThisRound, 13);
+                teamBScore = Mathf.Min(teamBScore + pointsThisRound, TargetScore);
                 teamBScoreText.text = $"{teamBScore}";
             }
 
             currentPlayerText.text = "Round Ended!";
 
             // check if the game is over
-            if (teamAScore >= 14 || teamBScore >= 13)
+            if (teamAScore >= TargetScore || teamBScore >= TargetScore)
             {
                 roundPhase = RoundPhase.EndGame;
                 Debug.Log("End of the game!");
                 winningTeamText.text = $"{(teamAScore > teamBScore ? "Team A" : "Team B")} wins!";
+
                 currentPlayerText.text = "Game Over!";
                 showEndGameUI();
                 return;
@@ -236,14 +247,15 @@ public class GameManager : MonoBehaviour
         {   //if one team has no balls left, the other team can play until they run out of balls
             currentTeam = teamAcanPlay ? Team.TeamA : Team.TeamB;
             Debug.Log($"{currentTeam} can play.");
-            currentPlayerText.text = $"Current Turn: {currentTeam}";
+            currentPlayerText.text = currentTeam == Team.TeamA ? "Current Turn: Team A" : "Current Turn: Team B";
             spawner.Invoke(nameof(spawner.spawnBall), 1f);
             return;
         }
 
         //default case 
         currentTeam = (closest.team == Team.TeamA) ? Team.TeamB : Team.TeamA;
-        currentPlayerText.text = $"Current Turn: {currentTeam}";
+        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
+
         spawner.Invoke(nameof(spawner.spawnBall), 1f);
 
 

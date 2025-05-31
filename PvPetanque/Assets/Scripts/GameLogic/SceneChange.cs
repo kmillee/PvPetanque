@@ -6,10 +6,13 @@ public class SceneChange : MonoBehaviour
     public GameObject settingsUI;
     public GameObject menuUI;
 
+
     public void changeToGame()
     {
         SceneManager.LoadScene("GameScene");
     }
+
+
 
 
     public void switchUI() // open settings and hide menu, or vice verdsa

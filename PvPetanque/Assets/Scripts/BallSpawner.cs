@@ -6,8 +6,9 @@ public class BallSpawner : MonoBehaviour
     public GameObject ballPrefab; // Prefab of the ball to spawn
     public Transform spawnPoint; // Point where the ball will be spawned
 
-    public Material teamAMaterial; // Material for Team A
-    public Material teamBMaterial; // Material for Team 
+    public Material ballMaterial;
+    
+
     
     
     void Start()
@@ -25,15 +26,19 @@ public class BallSpawner : MonoBehaviour
         ballScript.team = GameManager.instance.currentTeam;
 
         Renderer renderer = newBall.GetComponent<Renderer>();
+
+        Material teamMaterial;
         if (ballScript.team == Team.TeamA)
         {
-            renderer.material = teamAMaterial;
+            teamMaterial = new Material(ballMaterial);
+            teamMaterial.color = MatchSettingsData.teamColorA;
         }
         else
         {
-            renderer.material = teamBMaterial;
+            teamMaterial = new Material(ballMaterial);
+            teamMaterial.color = MatchSettingsData.teamColorB;
         }
-        
+        renderer.material = teamMaterial;
     }
 
 

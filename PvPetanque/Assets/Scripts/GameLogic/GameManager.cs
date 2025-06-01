@@ -7,6 +7,7 @@ using System;
 using UnityEngine.SceneManagement;
 
 
+
 public enum RoundPhase //should add draw phase maybe (or will be done in the menu)
 {
     CochonnetThrow,
@@ -18,11 +19,13 @@ public enum RoundPhase //should add draw phase maybe (or will be done in the men
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
-    public RoundPhase roundPhase = RoundPhase.CochonnetThrow;
-    public Cochonnet cochonnet;
-    public BallSpawner ballSpawner; //reference to the ball spawner
 
     // UI elements 
+    public GameObject teamAPanel;
+    public GameObject teamBPanel;
+
+    public GameObject teamAScorePanel;
+    public GameObject teamBScorePanel;
     public TextMeshProUGUI teamANameText; // Text element for team A name
     public TextMeshProUGUI teamBNameText; // Text element for team B name
     public GameObject endGameUI; // UI element to show at the end of the game
@@ -42,12 +45,18 @@ public class GameManager : MonoBehaviour
     private int teamBScore = 0; //score for team B
     private int pointsThisRound = 0; //points for this round
 
+    // Game state variables
     private List<Ball> allBalls = new List<Ball>(); //how many balls are on the field
     public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
     public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
+    public RoundPhase roundPhase = RoundPhase.CochonnetThrow;
+    public Cochonnet cochonnet;
+    public BallSpawner ballSpawner; //reference to the ball spawner
     public int maxBallsPerTeam = 6; //max balls per team
     public int TargetScore = 13;
     public Team currentTeam;
+
+
     private Ball closest; //closest ball to the cochonnet
 
 
@@ -63,13 +72,26 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this); // Prevent duplicates
         }
-    }    
+    }
 
     private void Start()
     {
         // Initialize the game
+        teamAPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
+        teamBPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
+
+        teamAScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
+        teamBScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
+        teamAScorePanel.GetComponentInChildren<TextMeshProUGUI>().color = GetTextColorForBackground(MatchSettingsData.teamColorA);
+        teamBScorePanel.GetComponentInChildren<TextMeshProUGUI>().color = GetTextColorForBackground(MatchSettingsData.teamColorB);
+
         teamANameText.text = $"{TeamData.GetTeamName(Team.TeamA)}";
         teamBNameText.text = $"{TeamData.GetTeamName(Team.TeamB)}";
+        teamANameText.color = GetTextColorForBackground(MatchSettingsData.teamColorA);
+        teamBNameText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
+
+        teamABallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorA);
+        teamBBallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
 
         TargetScore = MatchSettingsData.goalScore;
         currentTeam = Team.TeamA; //start with team A
@@ -98,7 +120,7 @@ public class GameManager : MonoBehaviour
         teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
         teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
         winningTeamText.text = "None";
-            
+
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
 
         teamAScoreText.text = $"{teamAScore}";
@@ -150,7 +172,7 @@ public class GameManager : MonoBehaviour
                 closest = b;
 
                 bestDistanceText.text = $"Distance to beat: {dist:F2} m";
-                bestDistanceText.color = TeamData.GetUnityColor(b.team);
+                bestDistanceText.color = closest.team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
             }
         }
 
@@ -339,6 +361,12 @@ public class GameManager : MonoBehaviour
 
         // Spawn a new cochonnet
         ballSpawner.spawnCochonnet();
+    }
+    
+    public Color GetTextColorForBackground(Color bgColor)
+    {
+        float luminance = 0.2126f * bgColor.r + 0.7152f * bgColor.g + 0.0722f * bgColor.b; // luminance using  formula for brightness
+        return luminance > 0.5f ? Color.black : Color.white;
     }
 
 

@@ -910,7 +910,7 @@ MonoBehaviour:
   width: 3
   length: 7
   resolution: 5
-  maxHeight: 0.5
+  maxHeight: 0.2
   seed: 143
   waterBiomeCurve:
     serializedVersion: 2
@@ -949,8 +949,17 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1.1889038
-      value: 0.49528122
+      time: 0.37025255
+      value: 0.32604504
+      inSlope: 0.35188317
+      outSlope: 0.35188317
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0358734
+      value: 0.40786743
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -964,8 +973,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.013889313
-      value: 0.49526978
+      time: 0.0002784729
+      value: 0.26532364
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1011,7 +1020,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: edfd9d674eebd9b4cb11f804b9cdb237, type: 3}
+  - {fileID: 2100000, guid: 9fbbd38626fd1904daa084e924084008, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

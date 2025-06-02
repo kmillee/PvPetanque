@@ -10,8 +10,9 @@ public class MeshGenerator : MonoBehaviour
     Mesh mesh;
 
     private Vector3[] vertices;
+    private Vector2[] uv;
     private int[] triangles;
-    private Color[] colors;
+    // private Color[] colors;
 
     public int width=10; // In world unit
     public int length=10; // In world unit
@@ -57,8 +58,9 @@ public class MeshGenerator : MonoBehaviour
         int resZ = length * resolution;
 
         vertices = new Vector3[(resX + 1) * (resZ + 1)];
+        uv = new Vector2[(resX + 1) * (resZ + 1)];
         triangles = new int[resX * resZ * 6];
-        colors = new Color[(resX + 1) * (resZ + 1)];
+        // colors = new Color[(resX + 1) * (resZ + 1)];
 
         // Generate triangle indices 
         int vert = 0;
@@ -91,12 +93,12 @@ public class MeshGenerator : MonoBehaviour
                 float height = Mathf.PerlinNoise(xPos + heightNoiseOffset.x, zPos + heightNoiseOffset.y);
                 
                 // Set vertex color
-                colors[x + z * (resX + 1)] = biome switch
-                {
-                    < 0.1f => Color.blue,
-                    < 0.2f => Color.green,
-                    _ => Color.yellow
-                };
+                // colors[x + z * (resX + 1)] = biome switch
+                // {
+                //     < 0.1f => Color.blue,
+                //     < 0.2f => Color.green,
+                //     _ => Color.yellow
+                // };
                 
                 float yPos = biome switch
                 {
@@ -107,20 +109,24 @@ public class MeshGenerator : MonoBehaviour
 
                 // Set vertex position
                 vertices[x + z * (resX + 1)] = new Vector3(xPos, yPos * maxHeight, zPos);
+                
+                // Set UV coordinates
+                uv[x + z * (resX + 1)] = new Vector2(xPos / width, zPos / width) * 0.25f;
             }
         }
-
-
+        
     }
 
     void UpdateMesh()
     {
         mesh.Clear();
         mesh.vertices = vertices;
+        mesh.uv = uv;
         mesh.triangles = triangles;
-        mesh.colors = colors;
+        // mesh.colors = colors;
         GetComponent<MeshCollider>().sharedMesh = mesh;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
+        
     }
 }

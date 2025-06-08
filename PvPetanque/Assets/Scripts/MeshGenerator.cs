@@ -17,13 +17,13 @@ public class MeshGenerator : MonoBehaviour
     public int width=10; // In world unit
     public int length=10; // In world unit
     public int resolution=5; // Number of segments along each axis
-    public float maxHeight = 0.5f; // Maximum height of the mesh
     public int seed = 143;
+
+    [SerializeField] private float edgeRaisingDistance;
 
     [SerializeField] private AnimationCurve waterBiomeCurve;
     [SerializeField] private AnimationCurve grassBiomeCurve;
     [SerializeField] private AnimationCurve sandBiomeCurve;
-    
     
     [SerializeField] private float biomeSize;
 
@@ -100,18 +100,27 @@ public class MeshGenerator : MonoBehaviour
                 //     _ => Color.yellow
                 // };
                 
+                // "biome" based position
                 float yPos = biome switch
                 {
-                    < 0.1f => waterBiomeCurve.Evaluate(height),
-                    < 0.2f => grassBiomeCurve.Evaluate(height),
+                    < 0.25f => waterBiomeCurve.Evaluate(height),
+                    < 0.5f => grassBiomeCurve.Evaluate(height),
                     _ => sandBiomeCurve.Evaluate(height)
                 };
+                
+                // edges position adjustement
+                float distanceToEdge = Mathf.Min(xPos, zPos, width - xPos, length - zPos);
+                if (distanceToEdge < edgeRaisingDistance)
+                {
+                    float adjustedDistanceToEdge = 1.0f - distanceToEdge / edgeRaisingDistance;
+                    yPos = Mathf.Max(yPos, adjustedDistanceToEdge);
+                }
 
                 // Set vertex position
-                vertices[x + z * (resX + 1)] = new Vector3(xPos, yPos * maxHeight, zPos);
+                vertices[x + z * (resX + 1)] = new Vector3(xPos, yPos, zPos);
                 
                 // Set UV coordinates
-                uv[x + z * (resX + 1)] = new Vector2(xPos / width, zPos / width) * 0.5f;
+                uv[x + z * (resX + 1)] = new Vector2(xPos / width, zPos / width);
             }
         }
         

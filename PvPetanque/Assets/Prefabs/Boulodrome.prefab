@@ -134,8 +134,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.0824114, y: -10.963412, z: 17.974262}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2839678472719493447}
   - {fileID: 7679151189396227911}
@@ -882,7 +882,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.5824113, y: 10.96, z: -21.474262}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 950702780995806280}
@@ -910,28 +910,28 @@ MonoBehaviour:
   width: 3
   length: 7
   resolution: 5
-  maxHeight: 0.5
   seed: 143
+  edgeRaisingDistance: 0.5
   waterBiomeCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.1
       inSlope: 0
       outSlope: 0
-      tangentMode: 34
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
+      value: 0.4
+      inSlope: 0.6010782
+      outSlope: 0.6010782
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.17500001
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -941,21 +941,21 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1.1889038
-      value: 0.49528122
+      value: 0.4
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.8
+      inSlope: 0.7303712
+      outSlope: 0.7303712
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.12916666
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -964,27 +964,27 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.013889313
-      value: 0.49526978
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      time: 0
+      value: 0.8
+      inSlope: 0.19999999
+      outSlope: 0.19999999
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1.1194458
-      value: -0.0047187805
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      time: 1
+      value: 1
+      inSlope: 0.19999999
+      outSlope: 0.19999999
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  biomeSize: 7
+  biomeSize: 4.61
   manualHeightNoiseOffset: {x: -5.5, y: 2.72}
   manualBiomeNoiseOffset: {x: 8.7, y: 1.49}
   manualNoiseOffset: {x: 27.7, y: -16.58}
@@ -1011,7 +1011,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: edfd9d674eebd9b4cb11f804b9cdb237, type: 3}
+  - {fileID: 2100000, guid: 98d9086c422975548a3238ed992855f2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

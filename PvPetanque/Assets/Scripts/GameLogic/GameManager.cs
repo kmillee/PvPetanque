@@ -20,44 +20,49 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
-    // UI elements 
-    public GameObject teamAPanel;
-    public GameObject teamBPanel;
+[Header("UI - Panels")]
+    [SerializeField] private GameObject teamAPanel;
+    [SerializeField] private GameObject teamBPanel;
+    [SerializeField] private GameObject teamAScorePanel;
+    [SerializeField] private GameObject teamBScorePanel;
+    [SerializeField] private GameObject endGameUI;
+    [SerializeField] private GameObject regularUI;
+    [SerializeField] private GameObject teamAItemPanel; 
+    [SerializeField] private GameObject teamBItemPanel; 
 
-    public GameObject teamAScorePanel;
-    public GameObject teamBScorePanel;
-    public TextMeshProUGUI teamANameText; // Text element for team A name
-    public TextMeshProUGUI teamBNameText; // Text element for team B name
-    public GameObject endGameUI; // UI element to show at the end of the game
-    public GameObject regularUI; // UI element to show during the game
-    public TextMeshProUGUI winningTeamText;
-    public TextMeshProUGUI teamABallsText;
-    public TextMeshProUGUI teamBBallsText;
-
-    public TextMeshProUGUI teamAScoreText;
-    public TextMeshProUGUI teamBScoreText;
-
-    public TextMeshProUGUI currentPlayerText;
+    [Header("UI - Text Elements")]
+    [SerializeField] private TextMeshProUGUI teamANameText;
+    [SerializeField] private TextMeshProUGUI teamBNameText;
+    [SerializeField] private TextMeshProUGUI winningTeamText;
+    [SerializeField] private TextMeshProUGUI teamABallsText;
+    [SerializeField] private TextMeshProUGUI teamBBallsText;
+    [SerializeField] private TextMeshProUGUI teamAScoreText;
+    [SerializeField] private TextMeshProUGUI teamBScoreText;
+    [SerializeField] private TextMeshProUGUI currentPlayerText;
     public TextMeshProUGUI currentDistanceText;
-    public TextMeshProUGUI bestDistanceText; // UI element to display distance
+    [SerializeField] private TextMeshProUGUI bestDistanceText;
 
-    private int teamAScore = 0; //score for team A
-    private int teamBScore = 0; //score for team B
-    private int pointsThisRound = 0; //points for this round
+    [Header("Game Settings")]
+    [SerializeField] private int maxBallsPerTeam = 6;
+    [SerializeField] private int TargetScore = 13;
 
-    // Game state variables
-    private List<Ball> allBalls = new List<Ball>(); //how many balls are on the field
-    public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
-    public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
-    public RoundPhase roundPhase = RoundPhase.CochonnetThrow;
+    [Header("Game Logic")]
+    [SerializeField] private BallSpawner ballSpawner;
     public Cochonnet cochonnet;
-    public BallSpawner ballSpawner; //reference to the ball spawner
-    public int maxBallsPerTeam = 6; //max balls per team
-    public int TargetScore = 13;
-    public Team currentTeam;
+    public Team currentTeam; // Assuming team switching logic needs public access
 
+    private int teamAScore = 0;
+    private int teamBScore = 0;
+    private int pointsThisRound = 0;
 
-    private Ball closest; //closest ball to the cochonnet
+    [Header("Ball Tracking")]
+    private List<Ball> allBalls = new List<Ball>();
+    [SerializeField] private List<Ball> teamABalls = new List<Ball>();
+    [SerializeField] private List<Ball> teamBBalls = new List<Ball>();
+    private Ball closest;
+
+    [Header("Game State")]
+    public RoundPhase roundPhase = RoundPhase.CochonnetThrow;
 
 
 
@@ -79,6 +84,9 @@ public class GameManager : MonoBehaviour
         // Initialize the game
         teamAPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
+
+        teamAItemPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
+        teamBItemPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
 
         teamAScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;

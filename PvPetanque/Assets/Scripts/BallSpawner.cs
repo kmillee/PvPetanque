@@ -7,44 +7,38 @@ public class BallSpawner : MonoBehaviour
     public Transform spawnPoint; // Point where the ball will be spawned
 
     public Material ballMaterial;
-    
 
-    
-    
-    void Start()
-    {
- 
-    }
-
-
-    public void spawnBall()
+    public Ball spawnBall(Team currentTeam)
     {
         GameObject newBall = Instantiate(ballPrefab, spawnPoint.position, Quaternion.identity);
-        Ball ballScript = newBall.GetComponent<Ball>();
-
-        // Set team before assigning material
-        ballScript.team = GameManager.instance.currentTeam;
-
-        Renderer renderer = newBall.GetComponent<Renderer>();
-
-        Material teamMaterial;
-        if (ballScript.team == Team.TeamA)
-        {
-            teamMaterial = new Material(ballMaterial);
-            teamMaterial.color = MatchSettingsData.teamColorA;
-        }
-        else
-        {
-            teamMaterial = new Material(ballMaterial);
-            teamMaterial.color = MatchSettingsData.teamColorB;
-        }
-        renderer.material = teamMaterial;
+        return spawnBall(newBall, currentTeam);
     }
-
-
-    public void spawnCochonnet()
+    
+    public Ball spawnBall(GameObject ball, Team currentTeam)
     {
-        Instantiate(cochonnetPrefab, spawnPoint.position, Quaternion.identity);
+        ball.transform.SetParent(transform);
+        
+        Ball ballScript = ball.AddComponent<Ball>();
+        
+        // Set team before assigning material
+        ballScript.Team = currentTeam;
+
+        Renderer renderer; // = ball.GetComponent<Renderer>();
+        if (ball.TryGetComponent<Renderer>(out renderer))
+        {
+            Material teamMaterial = new Material(ballMaterial);
+            teamMaterial.color = ballScript.Team == Team.TeamA
+                ? MatchSettingsData.teamColorA
+                : MatchSettingsData.teamColorB;
+            renderer.material = teamMaterial;
+        }
+        return ballScript;
+    }
+    
+
+    public GameObject spawnCochonnet()
+    {
+        return Instantiate(cochonnetPrefab, spawnPoint.position, Quaternion.identity, transform);
     }
 
 }

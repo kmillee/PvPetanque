@@ -4,8 +4,10 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using Unity.VisualScripting;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.Serialization;
 
 
 public enum RoundPhase //should add draw phase maybe (or will be done in the menu)
@@ -13,54 +15,64 @@ public enum RoundPhase //should add draw phase maybe (or will be done in the men
     CochonnetThrow,
     PlayerTurn,
     EndRound,
-    EndGame
+    EndGame,
+    
 }
+
+
+
+
 // TODO: for now, a new turn begins with teamA, needs to introduce a draw phase
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
     // UI elements 
-    public GameObject teamAPanel;
-    public GameObject teamBPanel;
+    [SerializeField] public GameObject teamAPanel;
+    [SerializeField] public GameObject teamBPanel;
 
-    public GameObject teamAScorePanel;
-    public GameObject teamBScorePanel;
-    public TextMeshProUGUI teamANameText; // Text element for team A name
-    public TextMeshProUGUI teamBNameText; // Text element for team B name
-    public GameObject endGameUI; // UI element to show at the end of the game
-    public GameObject regularUI; // UI element to show during the game
-    public TextMeshProUGUI winningTeamText;
-    public TextMeshProUGUI teamABallsText;
-    public TextMeshProUGUI teamBBallsText;
+    [SerializeField] public GameObject teamAScorePanel;
+    [SerializeField] public GameObject teamBScorePanel;
+    [SerializeField] public TextMeshProUGUI teamANameText; // Text element for team A name
+    [SerializeField] public TextMeshProUGUI teamBNameText; // Text element for team B name
+    [SerializeField] public GameObject endGameUI; // UI element to show at the end of the game
+    [SerializeField] public GameObject regularUI; // UI element to show during the game
+    [SerializeField] public TextMeshProUGUI winningTeamText;
+    [SerializeField] public TextMeshProUGUI teamABallsText;
+    [SerializeField] public TextMeshProUGUI teamBBallsText;
 
-    public TextMeshProUGUI teamAScoreText;
-    public TextMeshProUGUI teamBScoreText;
+    [SerializeField] public TextMeshProUGUI teamAScoreText;
+    [SerializeField] public TextMeshProUGUI teamBScoreText;
 
-    public TextMeshProUGUI currentPlayerText;
-    public TextMeshProUGUI currentDistanceText;
-    public TextMeshProUGUI bestDistanceText; // UI element to display distance
-
-    private int teamAScore = 0; //score for team A
-    private int teamBScore = 0; //score for team B
-    private int pointsThisRound = 0; //points for this round
-
+    [SerializeField] public TextMeshProUGUI currentPlayerText;
+    [SerializeField] public TextMeshProUGUI currentDistanceText;
+    [SerializeField] public TextMeshProUGUI bestDistanceText; // UI element to display distance
+    
+    // Field Parameters
+    [SerializeField] private ThrowManager throwManager; 
+    [SerializeField] private BallSpawner ballSpawner; //reference to the ball spawner
+    
+    [SerializeField] private int maxBallsPerTeam = 6; // max balls per team
+    [SerializeField] private int targetScore = 13;
+        
+    
     // Game state variables
+    private GameObject cochonnet;
     private List<Ball> allBalls = new List<Ball>(); //how many balls are on the field
     public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
     public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
-    public RoundPhase roundPhase = RoundPhase.CochonnetThrow;
-    public Cochonnet cochonnet;
-    public BallSpawner ballSpawner; //reference to the ball spawner
-    public int maxBallsPerTeam = 6; //max balls per team
-    public int TargetScore = 13;
+    private Ball closest; //closest ball to the cochonnet
+    private float closestDistance;
+    
+    private int teamAScore; //score for team A
+    private int teamBScore; //score for team B
+    private int pointsThisRound; //points for this round
+    
+    public RoundPhase roundPhase;
     public Team currentTeam;
 
-
-    private Ball closest; //closest ball to the cochonnet
-
-
-
+    
+    
     public void Awake()
     {
         if (instance == null)
@@ -76,7 +88,206 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Initialize the game
+        // Initialize the game  
+        StartUI();
+        StartGame();
+    }
+
+    private void StartGame()
+    {
+        // Initialize variables
+        targetScore = MatchSettingsData.goalScore;
+        currentTeam = MatchSettingsData.firstTeam;
+        
+        // Start a round
+        StartCoroutine(GameCoroutine());
+    }
+    
+    
+    
+    private IEnumerator GameCoroutine()
+    {
+        // Start game
+        InitializeScore();
+        while (true)
+        {
+            yield return RoundCoroutine();
+            if (teamAScore >= targetScore || teamBScore >= targetScore) { break; } // The game is finished !
+        }
+
+        // End of game
+        Debug.Log("End of the game!");
+        
+        roundPhase = RoundPhase.EndGame;
+        currentPlayerText.text = "Game Over!";
+        UpdateWinnerUI();
+        ShowEndGameUI();
+    }
+    
+    
+    
+    private IEnumerator RoundCoroutine()
+    {
+        ClearBalls();
+        
+        UpdateTeamScoreUI();
+        UpdateBallCountUI();
+        UpdateCurrentTeamUI();
+        winningTeamText.text = "None";
+
+        // Cochonnet time !
+        roundPhase = RoundPhase.CochonnetThrow;
+        cochonnet = ballSpawner.spawnCochonnet();
+        yield return throwManager.BallThrowSequence(cochonnet);
+            
+        Debug.Log("Cochonnet thrown, now it's time for the players to play!");
+        
+        // First turn 
+        UpdateCurrentTeamUI();
+        yield return TurnCoroutine();
+            
+        // Players take turn
+        roundPhase = RoundPhase.PlayerTurn;
+        while (true)
+        {
+            bool teamAcanPlay = teamABalls.Count < maxBallsPerTeam;
+            bool teamBcanPlay = teamBBalls.Count < maxBallsPerTeam;
+
+            if (!teamAcanPlay && !teamBcanPlay) break;
+            
+            // Update current team
+            currentTeam = (closest.Team == Team.TeamB && teamAcanPlay) || !teamBcanPlay ? Team.TeamA : Team.TeamB;
+            UpdateCurrentTeamUI();
+            yield return TurnCoroutine();
+        }
+            
+        // End of round
+        Debug.Log("No more balls left for both teams!");
+        Debug.Log($"{closest.Team} has won this round!");
+        
+        roundPhase = RoundPhase.EndRound;
+        currentPlayerText.text = "Round Ended!";   
+        
+        switch (closest.Team)
+        {
+            case Team.TeamA:
+                teamAScore = Mathf.Min(teamAScore + pointsThisRound, targetScore);
+                teamAScoreText.text = $"{teamAScore}";
+                break;
+            case Team.TeamB:
+                teamBScore = Mathf.Min(teamBScore + pointsThisRound, targetScore);
+                teamBScoreText.text = $"{teamBScore}";                    
+                break;
+            default:
+                Debug.Log("Closest ball has no team.");
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private IEnumerator TurnCoroutine()
+    {
+        Debug.Log("Next!");
+        
+        // Throw a new ball
+        Ball ballScript = ballSpawner.spawnBall(currentTeam);
+        RegisterBall(ballScript);
+        yield return throwManager.BallThrowSequence(ballScript.gameObject);
+                
+        // Update scores
+        ComputeTurnScores();
+                
+        // Update UI
+        UpdateBestDistanceUI();
+        UpdateLeadingTeamUI();
+    }
+    
+    
+    // Ball Logic
+    private void RegisterBall(Ball ball)
+    {
+        allBalls.Add(ball);
+        
+        switch (ball.Team)
+        {
+            case Team.TeamA:
+                teamABalls.Add(ball); 
+                break;
+            case Team.TeamB:
+                teamBBalls.Add(ball);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    // Setup logic
+    private void InitializeScore()
+    {
+        teamAScore = 0;
+        teamBScore = 0;
+    }
+    private void ClearBalls()
+    {
+        foreach (Ball ball in allBalls)
+        {
+            Destroy(ball.gameObject);
+        }
+        allBalls.Clear();
+        teamABalls.Clear();
+        teamBBalls.Clear();
+        if(cochonnet) { Destroy(cochonnet.gameObject); } // destroy the cochonnet
+        cochonnet = null; // reset the cochonnet reference
+    }
+    
+    // Game logic
+    private void ComputeTurnScores()
+    {
+        if (cochonnet == null || allBalls.Count == 0) return;
+
+        // find the closest ball to the cochonnet (and which team it belongs to)
+        closestDistance = Mathf.Infinity;
+        closest = null;
+        foreach (Ball b in allBalls)
+        {
+            float dist = Vector3.Distance(b.transform.position, cochonnet.transform.position);
+            if (dist < closestDistance)
+            {
+                closestDistance = dist;
+                closest = b;
+            }
+        }
+        
+        Team winningTeam = closest.Team;
+        List<Ball> winnerBalls = winningTeam == Team.TeamA ? teamABalls : teamBBalls;
+        List<Ball> loserBalls = winningTeam == Team.TeamA ? teamBBalls : teamABalls;
+        
+        // Find the closest loser ball distance to the cochonnet
+        float opponentClosestDist = Mathf.Infinity;
+        foreach (Ball b in loserBalls)
+        {
+            float dist = Vector3.Distance(b.transform.position, cochonnet.transform.position);
+            if (dist < opponentClosestDist)
+            {
+                opponentClosestDist = dist;
+            }
+        }
+
+        // Count how many balls from winning team are closer than the best opponent ball
+        pointsThisRound = 0;
+        foreach (Ball b in winnerBalls)
+        {
+            float dist = Vector3.Distance(b.transform.position, cochonnet.transform.position);
+            if (dist < opponentClosestDist)
+            {
+                pointsThisRound++;
+            }
+        }
+
+    }
+
+    // UI logic
+    private void StartUI()
+    {
         teamAPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
 
@@ -92,275 +303,63 @@ public class GameManager : MonoBehaviour
 
         teamABallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorA);
         teamBBallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
-
-        TargetScore = MatchSettingsData.goalScore;
-        currentTeam = Team.TeamA; //start with team A
-        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
-        winningTeamText.text = "None";
-
-        // Spawn the cochonnet
-        ballSpawner.spawnCochonnet();
     }
-
-    private void NextRound()
+    private void UpdateBallCountUI()
     {
-        // Reset the game state for a new round
-        allBalls.Clear();
-        teamABalls.Clear();
-        teamBBalls.Clear();
-        // destroy all balls
-        foreach (Ball ball in FindObjectsOfType<Ball>())
-        {
-            Destroy(ball.gameObject);
-        }
-        Destroy(cochonnet.gameObject); // destroy the cochonnet
-        cochonnet = null; // reset the cochonnet reference
-
-        // Reset UI
         teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
-        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
-        winningTeamText.text = "None";
+        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";        
+    }
 
-        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
-
+    private void UpdateTeamScoreUI()
+    {
         teamAScoreText.text = $"{teamAScore}";
-        teamBScoreText.text = $"{teamBScore}";
-
-        ballSpawner.spawnCochonnet(); // Spawn a new cochonnet
-        roundPhase = RoundPhase.CochonnetThrow; // Reset the round phase
+        teamBScoreText.text = $"{teamBScore}";        
     }
 
-    //set the cochonnet
-    public void SetCochonnet(Cochonnet cochonnet)
+    private void UpdateCurrentTeamUI()
     {
-        this.cochonnet = cochonnet;
-        Debug.Log("Cochonnet set!");
+        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";        
     }
 
-    //update ball count when a ball is thrown
-    public void RegisterBall(Ball ball)
+    private void UpdateBestDistanceUI()
     {
-        allBalls.Add(ball);
-        if (ball.team == Team.TeamA)
-        {
-            teamABalls.Add(ball);
-            teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
-        }
-        else if (ball.team == Team.TeamB)
-        {
-            teamBBalls.Add(ball);
-            teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
-        }
+        bestDistanceText.text = $"Distance to beat: {closestDistance:F2} m";
+        bestDistanceText.color = closest.Team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
     }
 
-    public void DetermineClosestBall()
+    private void UpdateLeadingTeamUI()
     {
-
-        if (cochonnet == null || allBalls.Count == 0) return;
-
-        float minDist = Mathf.Infinity;
-        closest = null;
-
-        // find the closest ball to the cochonnet (and which team it belongs to)
-        foreach (Ball b in allBalls)
-        {
-
-            float dist = Vector3.Distance(b.transform.position, cochonnet.transform.position);
-            if (dist < minDist)
-            {
-                minDist = dist;
-                closest = b;
-
-                bestDistanceText.text = $"Distance to beat: {dist:F2} m";
-                bestDistanceText.color = closest.team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
-            }
-        }
-
-        Team winningTeam = closest.team;
-
-
-
-        // Find the closest opponent ball to the cochonnet
-        float opponentClosestDist = Mathf.Infinity;
-        foreach (Ball b in allBalls)
-        {
-            if (b.team != winningTeam)
-            {
-                float dist = Vector3.Distance(b.transform.position, cochonnet.transform.position);
-                if (dist < opponentClosestDist)
-                    opponentClosestDist = dist;
-            }
-        }
-
-        // Count how many balls from winning team are closer than the best opponent ball
-        pointsThisRound = 0;
-        foreach (Ball b in allBalls)
-        {
-            if (b.team == winningTeam)
-            {
-                float dist = Vector3.Distance(b.transform.position, cochonnet.transform.position);
-                if (dist < opponentClosestDist)
-                    pointsThisRound++;
-            }
-        }
-        string teamName = TeamData.GetTeamName(closest.team);
-        winningTeamText.text = $"{teamName} ({pointsThisRound} pts)";
-
+        winningTeamText.text = $"{TeamData.GetTeamName(closest.Team)} ({pointsThisRound} pts)";
     }
 
-    public void NextTurn()
+    private void UpdateWinnerUI()
     {
-        Debug.Log("Next turn!");
-        var spawner = FindFirstObjectByType<BallSpawner>();
-
-        // we wait for all balls to stop moving before proceeding
-
-        if (roundPhase == RoundPhase.CochonnetThrow)
-        {
-            roundPhase = RoundPhase.PlayerTurn;
-            Debug.Log("Cochonnet thrown, now it's time for the players to play!");
-            // currentPlayerText.text = currentTeam == Team.TeamA ? "Current Turn: Team A" : "Current Turn: Team B";
-            currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
-
-            spawner.Invoke(nameof(spawner.spawnBall), 1f);
-            return;
-        }
-
-        bool teamAcanPlay = teamABalls.Count < maxBallsPerTeam;
-        bool teamBcanPlay = teamBBalls.Count < maxBallsPerTeam;
-
-        if (!teamAcanPlay && !teamBcanPlay)
-        {
-            Debug.Log("No more balls left for both teams!");
-            roundPhase = RoundPhase.EndRound;
-            Debug.Log($"{closest.team} has won!");
-            winningTeamText.text = $"Winning: {closest.team}";
-            if (closest.team == Team.TeamA)
-            {
-                teamAScore = Mathf.Min(teamAScore + pointsThisRound, TargetScore);
-                teamAScoreText.text = $"{teamAScore}";
-            }
-            else
-            {
-                teamBScore = Mathf.Min(teamBScore + pointsThisRound, TargetScore);
-                teamBScoreText.text = $"{teamBScore}";
-            }
-
-            currentPlayerText.text = "Round Ended!";
-
-            // check if the game is over
-            if (teamAScore >= TargetScore || teamBScore >= TargetScore)
-            {
-                roundPhase = RoundPhase.EndGame;
-                Debug.Log("End of the game!");
-                winningTeamText.text = $"{(teamAScore > teamBScore ? "Team A" : "Team B")} wins!";
-
-                currentPlayerText.text = "Game Over!";
-                showEndGameUI();
-                return;
-            }
-
-            NextRound();
-
-            return;
-        }
-
-        if (!teamAcanPlay || !teamBcanPlay)
-        {   //if one team has no balls left, the other team can play until they run out of balls
-            currentTeam = teamAcanPlay ? Team.TeamA : Team.TeamB;
-            Debug.Log($"{currentTeam} can play.");
-            currentPlayerText.text = currentTeam == Team.TeamA ? "Current Turn: Team A" : "Current Turn: Team B";
-            spawner.Invoke(nameof(spawner.spawnBall), 1f);
-            return;
-        }
-
-        //default case 
-        currentTeam = (closest.team == Team.TeamA) ? Team.TeamB : Team.TeamA;
-        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
-
-        spawner.Invoke(nameof(spawner.spawnBall), 1f);
-
-
+        Team winner = teamAScore > teamBScore ? Team.TeamA : Team.TeamB;
+        winningTeamText.text = $"{TeamData.GetTeamName(winner)} wins!";
     }
-
-
-    public bool AreAllBallsStopped(float threshold = 0.0005f)
+    
+    private void ShowRegularUI()
     {
-        foreach (Ball ball in allBalls)
-        {
-            Rigidbody rb = ball.GetComponent<Rigidbody>();
-            if (rb != null && rb.linearVelocity.magnitude > threshold)
-                return false;
-        }
-        return true;
+        regularUI.SetActive(true);
+        endGameUI.SetActive(false);
     }
-
-    public void WaitAndProceedToNextTurn()
-    {
-        StartCoroutine(WaitForBallsToStopAndContinue());
-    }
-
-    private IEnumerator WaitForBallsToStopAndContinue()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        // Wait until all balls stop moving
-        while (!AreAllBallsStopped())
-        {
-            yield return new WaitForSeconds(0.2f); // small wait to avoid checking every frame
-        }
-
-        // Once balls stop, determine the closest ball and proceed
-        DetermineClosestBall();
-
-
-        NextTurn();
-    }
-
-    private void showEndGameUI()
+    
+    private void ShowEndGameUI()
     {
         regularUI.SetActive(false);
         endGameUI.SetActive(true);
     }
 
-    public void changeToMenu()
+    public void ChangeToMenu()
     {
         SceneManager.LoadScene("MenuScene");
     }
 
     public void RestartGame()
     {
-        // Reset all variables and game state
-        roundPhase = RoundPhase.CochonnetThrow;
-        teamAScore = 0;
-        teamBScore = 0;
-
-        teamABalls.Clear();
-        teamBBalls.Clear();
-        allBalls.Clear();
-
-        teamAScoreText.text = "0";
-        teamBScoreText.text = "0";
-        winningTeamText.text = "None";
-
-        // Destroy all existing balls (optional, but important)
-        foreach (Ball ball in FindObjectsOfType<Ball>())
-        {
-            Destroy(ball.gameObject);
-        }
-
-        if (cochonnet != null)
-        {
-            Destroy(cochonnet.gameObject);
-            cochonnet = null;
-        }
-
-        // Reset UI and turn
-        endGameUI.SetActive(false);
-        regularUI.SetActive(true);
-
-        // Spawn a new cochonnet
-        ballSpawner.spawnCochonnet();
+        // Reset UI
+        ShowRegularUI();
+        StartGame();
     }
     
     public Color GetTextColorForBackground(Color bgColor)

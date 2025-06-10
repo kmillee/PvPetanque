@@ -9,53 +9,54 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private Rigidbody _rigidbody;
     
-    [SerializeField] private Vector3 startingPosition;
     [SerializeField] private float positionRelaxingSpeed = 5.0f;
     [SerializeField] private float minimumTranslationSpeed = 0.5f;
     
-    [SerializeField] private Vector3 startingRotation;
     [SerializeField] private float rotationRelaxingSpeed = 5.0f;
     [SerializeField] private float minimumRotationSpeed = 0.5f;
 
-    [SerializeField] public float startingFov;
     [SerializeField] private float fovRelaxingSpeed = 5.0f;
     [SerializeField] private float minimumFovSpeed = 0.5f;
 
     private float _speedMultiplier = 1.0f;
     public float SpeedMultiplier
     {
-        get { return _speedMultiplier; }
-        set { _speedMultiplier = value; }
+        get => _speedMultiplier;
+        set => _speedMultiplier = value;
     }
     
     private Vector3 _targetPosition;
     public Vector3 TargetPosition
     {
-        get { return _targetPosition; }
-        set { _targetPosition = value; }
+        get => _targetPosition;
+        set
+        {
+            Debug.Log($"Target position = {value}");
+            _targetPosition = value;
+        }
     }
 
     private Quaternion _targetRotation;
     public Quaternion TargetRotation
     {
-        get { return _targetRotation; }
-        set { _targetRotation = value; }
+        get => _targetRotation;
+        set => _targetRotation = value;
     }
 
     private float _targetFov;
     public float TargetFov
     {
-        get { return _targetFov; }
-        set { _targetFov = value; }
+        get => _targetFov;
+        set => _targetFov = value;
     }
 
-    void Start()
+    void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        
-        TargetFov = _camera.fieldOfView = startingFov;
-        TargetPosition = transform.position = startingPosition;
-        TargetRotation = transform.rotation = Quaternion.Euler(startingRotation);
+
+        TargetFov = _camera.fieldOfView;
+        TargetPosition = transform.position;
+        TargetRotation = transform.rotation;
     }
     
     void Update()

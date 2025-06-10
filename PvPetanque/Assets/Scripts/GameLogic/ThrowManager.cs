@@ -8,16 +8,16 @@ using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
 
-public class BallManager_test1 : MonoBehaviour
+public class ThrowManager : MonoBehaviour
 {
-    private Coroutine _ballThrowCoroutine;
+    private bool _ballThrowIsRunning = false;
     
-    [SerializeField] private Vector3 startingPosition;
-    [SerializeField] private GameObject ballPrefab;
-    private GameObject _ball;
-    private Rigidbody _ballRb;
+    private Vector3 _startingPosition;
+    private GameObject _currentBall;
+    private Rigidbody _currentBallRb;
     
-    // Different stages indicator
+    // indicators
+    [SerializeField] private GameObject _indicatorsPrefab;
     private AimingIndicator _aimingIndicator;
     private CalibratingIndicator _calibratingIndicator;
     private ReleasingIndicator _releasingIndicator;
@@ -72,97 +72,85 @@ public class BallManager_test1 : MonoBehaviour
     [SerializeField] private float ballFollowingFovExponent;
 
 
-    private void Start()
+    public IEnumerator BallThrowSequence(GameObject ball)
     {
-        Debug.Log("Press r to reset");
-    }
-
-    private void Update()
-    {
-        // reset
-        if (Input.GetKeyDown("r"))
+        
+        if (_ballThrowIsRunning)
         {
-            Debug.Log("reset");
-            if(_ballThrowCoroutine is not null) StopCoroutine(_ballThrowCoroutine);
-            _ballThrowCoroutine = StartCoroutine(BallThrowSequence());
+            Debug.Log("Launched a ballThrow coroutine but the previous one is not finished.");
+            yield break;
         }
         
-    }
-
-    private IEnumerator BallThrowSequence()
-    {
-        // Debug.Log("Starting turn.");
+        _ballThrowIsRunning = true;
+        SetBall(ball);
         
-        CreateBall();
-        
-        // Debug.Log("Aim (press space).");
         yield return AimingStage();
 
-        // Debug.Log("Calibrate strength (press and then release space).");
         yield return CalibratingStage();
 
-        // Debug.Log("Release the ball (press and then release space).");
         yield return ReleasingStage();
         
-        // Debug.Log("Wait for ball to stop.");
         yield return FlightStage();
+        _ballThrowIsRunning = false;
     }
     
-    private void CreateBall()
+    private void SetBall(GameObject ball)
     {
-        if (_ball) { Destroy(_ball); }
-        _ball = Instantiate(ballPrefab, transform);
-        _ball.transform.position = startingPosition;
+        _currentBall = ball;
+        _startingPosition = ball.transform.position;
         
-        if (_ball.TryGetComponent<Rigidbody>(out _ballRb))
+        if (_currentBall.TryGetComponent<Rigidbody>(out _currentBallRb))
         {
-            _ballRb.useGravity = false;
+            _currentBallRb.useGravity = false;
         }
         else
         {
-            Debug.Log("No RigidBody found in ball prefab.");
+            Debug.Log("No RigidBody found in ball gameobject.");
             return;
         }
 
-        if (_ball.TryGetComponent<AimingIndicator>(out _aimingIndicator))
+        var indicators = Instantiate(_indicatorsPrefab, _currentBall.transform);
+
+        if (indicators.TryGetComponent<AimingIndicator>(out _aimingIndicator))
         {
             _aimingIndicator.Display(false);
         }
         else
         {
-            Debug.Log("No aimingIndicator found in ball prefab.");
+            Debug.Log("No aimingIndicator found in indicators prefab.");
             return;
         }
         
-        if (_ball.TryGetComponent<CalibratingIndicator>(out _calibratingIndicator))
+        if (indicators.TryGetComponent<CalibratingIndicator>(out _calibratingIndicator))
         {
             _calibratingIndicator.Display(false);
         }
         else
         {
-            Debug.Log("No calibratingIndicator found in ball prefab.");
+            Debug.Log("No calibratingIndicator found in indicators prefab.");
             return;
         }
         
-        if (_ball.TryGetComponent<ReleasingIndicator>(out _releasingIndicator))
+        if (indicators.TryGetComponent<ReleasingIndicator>(out _releasingIndicator))
         {
             _releasingIndicator.Display(false);
             _releasingIndicator.setLocalLength(distanceToAnchor);
         }
         else
         {
-            Debug.Log("No releasingIndicator found in ball prefab.");
+            Debug.Log("No releasingIndicator found in indicators prefab.");
             return;
         }
     }
 
     private IEnumerator AimingStage()
     {
+        Debug.Log("Aiming Stage (press space)");
+        
         // Setting up camera and indicators
-        cameraManager.TargetPosition = startingPosition + aimingCameraPosition;
+        cameraManager.TargetPosition = _startingPosition + aimingCameraPosition;
         cameraManager.TargetRotation = aimingCameraRotation;
         _aimingIndicator.Display(true);
-        cameraManager.TargetFov = cameraManager.startingFov;
         
         // Wait for key press
         _aimAngle = Random.Range(minAimAngle, maxAimAngle);
@@ -182,8 +170,8 @@ public class BallManager_test1 : MonoBehaviour
                 direction = -1.0f;
                 _aimAngle = maxAimAngle;
             }
-            _ball.transform.rotation = Quaternion.Euler(0, _aimAngle, 0);
-            
+            _currentBall.transform.rotation = Quaternion.Euler(0, _aimAngle, 0);
+
             yield return null;
         }
         
@@ -193,13 +181,15 @@ public class BallManager_test1 : MonoBehaviour
 
     private IEnumerator CalibratingStage()
     {
+        Debug.Log("Calibrating Stage (hold space and release)");
+        
         // Setting up ball
-        _ball.transform.rotation = Quaternion.Euler(-startingReleaseAngle, _aimAngle, 0);
+        _currentBall.transform.rotation = Quaternion.Euler(-startingReleaseAngle, _aimAngle, 0);
         
         // Setting up camera and indicators
         _calibratingIndicator.UpdateLength(0.0f);   
         _releasingIndicator.Display(true);
-        cameraManager.TargetPosition = startingPosition + Quaternion.Euler(0,_aimAngle,0) * calibratingCameraStartingPosition;
+        cameraManager.TargetPosition = _startingPosition + Quaternion.Euler(0,_aimAngle,0) * calibratingCameraStartingPosition;
         cameraManager.TargetRotation = Quaternion.Euler(0,_aimAngle,0) * calibratingCameraStartingRotation;
         float originalFOV = cameraManager.TargetFov;
         cameraManager.TargetFov = calibratingCameraStartingFOV;
@@ -214,7 +204,7 @@ public class BallManager_test1 : MonoBehaviour
         // Setting up camera and indicators
         _calibratingIndicator.Display(true);
         _calibratingIndicator.UpdateLength(0.0f);
-        cameraManager.TargetPosition = startingPosition + Quaternion.Euler(0,_aimAngle,0) * calibratingCameraStartingPosition;
+        cameraManager.TargetPosition = _startingPosition + Quaternion.Euler(0,_aimAngle,0) * calibratingCameraStartingPosition;
         cameraManager.TargetRotation = Quaternion.Euler(0,_aimAngle,0) * calibratingCameraStartingRotation;
         cameraManager.TargetFov = calibratingCameraStartingFOV;
         cameraManager.SpeedMultiplier = 3.0f;
@@ -232,7 +222,7 @@ public class BallManager_test1 : MonoBehaviour
             springLength = lengthAtMaxStrength * _initialVelocity; // in [0, lengthAtMaxStrength]
             _calibratingIndicator.UpdateLength(springLength);
             float t = springLength / lengthAtMaxStrength;
-            cameraManager.TargetPosition = startingPosition + Quaternion.Euler(0,_aimAngle,0) * Vector3.Lerp(calibratingCameraStartingPosition, calibratingCameraMaxStrengthPosition, t);
+            cameraManager.TargetPosition = _startingPosition + Quaternion.Euler(0,_aimAngle,0) * Vector3.Lerp(calibratingCameraStartingPosition, calibratingCameraMaxStrengthPosition, t);
             cameraManager.TargetRotation = Quaternion.Euler(0,_aimAngle,0) * Quaternion.Slerp(calibratingCameraStartingRotation, calibratingCameraMaxStrengthRotation, t);
             cameraManager.TargetFov = Mathf.Lerp(calibratingCameraStartingFOV, calibratingCameraMaxStrengthFOV, t);
             
@@ -243,7 +233,7 @@ public class BallManager_test1 : MonoBehaviour
 
         // Spring Animation
         float springVelocity = 0.0f;
-        float w0 = springConstant / _ballRb.mass;
+        float w0 = springConstant / _currentBallRb.mass;
         while(springLength > 0.0f)
         {
             // "Physics Simulation" (may have to move it to FixedUpdate, but it works here so)
@@ -255,7 +245,7 @@ public class BallManager_test1 : MonoBehaviour
             // Animation & Camera movements
             _calibratingIndicator.UpdateLength(springLength);
             float t = 1 - springLength / lengthAtMaxStrength;
-            cameraManager.TargetPosition = startingPosition + Quaternion.Euler(0,_aimAngle,0) * Vector3.Lerp(calibratingCameraMaxStrengthPosition, calibratingCameraFinalPosition, t);
+            cameraManager.TargetPosition = _startingPosition + Quaternion.Euler(0,_aimAngle,0) * Vector3.Lerp(calibratingCameraMaxStrengthPosition, calibratingCameraFinalPosition, t);
             cameraManager.TargetRotation = Quaternion.Euler(0,_aimAngle,0) * Quaternion.Slerp(calibratingCameraMaxStrengthRotation, calibratingCameraFinalRotation, t);
             cameraManager.TargetFov = Mathf.Lerp(calibratingCameraMaxStrengthFOV, calibratingCameraFinalFOV, t);
             
@@ -271,12 +261,14 @@ public class BallManager_test1 : MonoBehaviour
 
     private IEnumerator ReleasingStage()
     {
+        Debug.Log("Releasing Stage (press space)");
+        
         // Setting up camera and indicators
         _releasingIndicator.Display(true);
         
         // Waiting for key press
         Vector3 anchorPosition = _releasingIndicator.getPosition();
-        float l = (anchorPosition - _ball.transform.position).magnitude;
+        float l = (anchorPosition - _currentBall.transform.position).magnitude;
         float w02 = -Physics.gravity.y / l;
         _releaseAngle = startingReleaseAngle;
         float angularVelocity = _initialVelocity;
@@ -287,11 +279,11 @@ public class BallManager_test1 : MonoBehaviour
             float angularAcceleration = -w02 * Mathf.Sin(_releaseAngle * Mathf.Deg2Rad) * swingSpeed;
             angularVelocity += angularAcceleration * Time.deltaTime;
             _releaseAngle += angularVelocity * Time.deltaTime;
-            _ballRb.MovePosition(anchorPosition + l * (Quaternion.Euler(-_releaseAngle, _aimAngle, 0) * Vector3.down));
-            _ballRb.MoveRotation(Quaternion.Euler(-_releaseAngle, _aimAngle, 0));
+            _currentBallRb.MovePosition(anchorPosition + l * (Quaternion.Euler(-_releaseAngle, _aimAngle, 0) * Vector3.down));
+            _currentBallRb.MoveRotation(Quaternion.Euler(-_releaseAngle, _aimAngle, 0));
             
             // Camera management
-            cameraManager.TargetPosition = startingPosition + releasingCameraPosition;
+            cameraManager.TargetPosition = _startingPosition + releasingCameraPosition;
             cameraManager.TargetRotation = Quaternion.Euler(0,_aimAngle,0) * releasingCameraRotation;
 
             if (Input.GetKeyDown("space") || _releaseAngle > maxReleaseAngle) { break; }
@@ -307,15 +299,16 @@ public class BallManager_test1 : MonoBehaviour
 
     private IEnumerator FlightStage()
     {
-        _ballRb.useGravity = true;
-        _ballRb.linearVelocity = _ball.transform.rotation * Vector3.forward * _initialVelocity;
+        Debug.Log("Flight Stage");
+        _currentBallRb.useGravity = true;
+        _currentBallRb.linearVelocity = _currentBall.transform.rotation * Vector3.forward * _initialVelocity;
         
         cameraManager.SpeedMultiplier = 1.0f;
         cameraManager.TargetPosition = flightCameraPosition;
 
-        while (_ballRb.linearVelocity.magnitude > 0.001f && _ball.transform.position.y > 0)
+        while (_currentBallRb.linearVelocity.magnitude > 0.001f && _currentBall.transform.position.y > 0)
         {
-            Vector3 lookDirection = _ball.transform.position - cameraManager.TargetPosition;
+            Vector3 lookDirection = _currentBall.transform.position - cameraManager.TargetPosition;
             float distance = lookDirection.magnitude;
             cameraManager.TargetRotation = Quaternion.LookRotation(lookDirection) * flightCameraRotation;
             cameraManager.TargetFov = 120.0f / Mathf.Pow(distance, ballFollowingFovExponent);

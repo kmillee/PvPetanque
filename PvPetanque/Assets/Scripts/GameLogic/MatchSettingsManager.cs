@@ -5,23 +5,30 @@ using System.Collections.Generic;
 
 public class MatchSettingsManager : MonoBehaviour
 {
-    public TMP_Dropdown pointsDropdown; // Or TMP_Dropdown if you're using TextMeshPro
-    public int[] availablePointOptions = { 11, 13, 15, 21 };
+    [Header("Points Dropdown")]
+    [SerializeField] private TMP_Dropdown pointsDropdown;
+    [SerializeField] private int[] availablePointOptions = { 11, 13, 15, 21 };
 
-    public TMP_Text nameDisplayA;
-    public TMP_InputField nameInputA;
+    [Header("Ball Count Dropdown")]
+    [SerializeField] private TMP_Dropdown ballsDropdown;
+    [SerializeField] private int[] availableBallOptions = { 2, 4, 6, 8, 10 };
 
-    public TMP_Text nameDisplayB;
-    public TMP_InputField nameInputB;
+    [Header("Team Name A")]
+    [SerializeField] private TMP_Text nameDisplayA;
+    [SerializeField] private TMP_InputField nameInputA;
 
-    // needs to implement a Color class to handle team colors
-    // public GameObject colorFieldA;
-    // public GameObject colorFieldB;
+    [Header("Team Name B")]
+    [SerializeField] private TMP_Text nameDisplayB;
+    [SerializeField] private TMP_InputField nameInputB;
+
+
 
     void Start()
     {
-        SetupDropdown();
+        SetupPointsDropdown();
+        SetupBallsDropdown();
 
+        // Team name setup
         nameDisplayA.text = MatchSettingsData.teamNameA;
         nameInputA.text = MatchSettingsData.teamNameA;
         nameInputA.gameObject.SetActive(false);
@@ -30,12 +37,12 @@ public class MatchSettingsManager : MonoBehaviour
         nameInputB.text = MatchSettingsData.teamNameB;
         nameInputB.gameObject.SetActive(false);
 
-        // Add listeners
+        // Add listeners for names
         nameInputA.onEndEdit.AddListener(delegate { FinishNameEditA(); });
         nameInputB.onEndEdit.AddListener(delegate { FinishNameEditB(); });
     }
 
-    void SetupDropdown()
+    void SetupPointsDropdown()
     {
         pointsDropdown.ClearOptions();
 
@@ -53,14 +60,36 @@ public class MatchSettingsManager : MonoBehaviour
         pointsDropdown.RefreshShownValue();
 
         // Assign listener
-        pointsDropdown.onValueChanged.AddListener(OnDropdownChanged);
+        pointsDropdown.onValueChanged.AddListener(OnPointsDropdownChanged);
     }
 
-    void OnDropdownChanged(int index)
+    void OnPointsDropdownChanged(int index)
     {
         int selectedPoints = availablePointOptions[index];
         MatchSettingsData.goalScore = selectedPoints;
         Debug.Log("Points to Win set to: " + selectedPoints);
+    }
+
+    private void SetupBallsDropdown()
+    {
+        ballsDropdown.ClearOptions();
+        List<string> options = new List<string>();
+        foreach (int balls in availableBallOptions)
+            options.Add(balls.ToString());
+
+        ballsDropdown.AddOptions(options);
+        // Default selection (6)
+        int defaultIndex = System.Array.IndexOf(availableBallOptions, 6);
+        ballsDropdown.value = defaultIndex;
+        ballsDropdown.RefreshShownValue();
+        ballsDropdown.onValueChanged.AddListener(OnBallsDropdownChanged);
+    }
+
+    private void OnBallsDropdownChanged(int index)
+    {
+        int selectedBalls = availableBallOptions[index];
+        MatchSettingsData.ballsPerTeam = selectedBalls;
+        Debug.Log("Balls per Team set to: " + selectedBalls);
     }
 
 

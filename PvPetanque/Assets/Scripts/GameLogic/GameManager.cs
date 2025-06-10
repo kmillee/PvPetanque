@@ -101,6 +101,10 @@ public class GameManager : MonoBehaviour
         teamABallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorA);
         teamBBallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
 
+        maxBallsPerTeam = MatchSettingsData.ballsPerTeam;
+        teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
+        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
+        
         TargetScore = MatchSettingsData.goalScore;
         currentTeam = Team.TeamA; //start with team A
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";

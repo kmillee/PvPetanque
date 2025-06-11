@@ -224,7 +224,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Next turn!");
         var spawner = FindFirstObjectByType<BallSpawner>();
-
+        RepulseEffectManager.Instance.OnTurnStart();
         // we wait for all balls to stop moving before proceeding
 
         if (roundPhase == RoundPhase.CochonnetThrow)

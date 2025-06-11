@@ -7,8 +7,9 @@ public class BallSpawner : MonoBehaviour
     public Transform spawnPoint; // Point where the ball will be spawned
 
     public Material ballMaterial;
-    
 
+    public TeamItemSlot teamASlot;
+    public TeamItemSlot teamBSlot;
     
     
     void Start()
@@ -32,11 +33,15 @@ public class BallSpawner : MonoBehaviour
         {
             teamMaterial = new Material(ballMaterial);
             teamMaterial.color = MatchSettingsData.teamColorA;
+            if(teamASlot != null)
+                teamASlot.SetTeamObject(newBall);
         }
         else
         {
             teamMaterial = new Material(ballMaterial);
             teamMaterial.color = MatchSettingsData.teamColorB;
+            if(teamBSlot != null)
+                teamBSlot.SetTeamObject(newBall);
         }
         renderer.material = teamMaterial;
     }

@@ -52,26 +52,30 @@ public class TeamItemSlot : MonoBehaviour
         RefreshUI();
     }
 
-private void RefreshUI()
-{
-    useItemButton.interactable = currentItem != null;
-
-    if (itemIcon != null)
+    private void RefreshUI()
     {
-        if (currentItem != null)
+        useItemButton.interactable = currentItem != null;
+
+        if (itemIcon != null)
         {
-            itemIcon.enabled = true;
-            itemIcon.sprite = currentItem.icon; 
+            if (currentItem != null)
+            {
+                itemIcon.enabled = true;
+                itemIcon.sprite = currentItem.icon; 
+            }
+            else
+            {
+                itemIcon.enabled = false;
+                itemIcon.sprite = null; // Clear the icon if no item is assigned
+            }
         }
-        else
-        {
-            itemIcon.enabled = false;
-            itemIcon.sprite = null; // Clear the icon if no item is assigned
-        }
+
+        if (buttonHighlight != null)
+            buttonHighlight.SetActive(currentItem != null);
     }
 
-    if (buttonHighlight != null)
-        buttonHighlight.SetActive(currentItem != null);
-}
+    public void SetTeamObject(GameObject obj) {
+        teamObject = obj;
+    }
 
 }

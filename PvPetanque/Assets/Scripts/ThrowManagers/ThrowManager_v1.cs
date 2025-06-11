@@ -17,7 +17,7 @@ public class ThrowManager_v1 : ThrowManager
     private ReleasingIndicator _releasingIndicator;
     
     // Camera manager
-    [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private CameraMovementManager cameraManager;
     private float baseFOV;
     
     // Aiming camera
@@ -65,17 +65,6 @@ public class ThrowManager_v1 : ThrowManager
     [SerializeField] private Quaternion flightCameraRotation;
     [SerializeField] private float ballFollowingFovExponent;
 
-
-    protected override IEnumerator BallThrowSequence(GameObject ball)
-    {
-        yield return AimingStage();
-
-        yield return CalibratingStage();
-
-        yield return ReleasingStage();
-        
-        yield return FlightStage();
-    }
     
     protected override void SetUpBall(GameObject ball)
     {
@@ -112,7 +101,18 @@ public class ThrowManager_v1 : ThrowManager
             return;
         }
     }
+    
+    protected override IEnumerator BallThrowSequence(GameObject ball)
+    {
+        yield return AimingStage();
 
+        yield return CalibratingStage();
+
+        yield return ReleasingStage();
+        
+        yield return FlightStage();
+    }
+    
     private IEnumerator AimingStage()
     {
         Debug.Log("Aiming Stage (press space)");
@@ -288,8 +288,5 @@ public class ThrowManager_v1 : ThrowManager
         cameraManager.TargetFov = 60.0f;
         cameraManager.SpeedMultiplier = 1.0f;
     }
-    
-    
-    
     
 }

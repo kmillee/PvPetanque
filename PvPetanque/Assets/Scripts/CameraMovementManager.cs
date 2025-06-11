@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 // TODO: implement user inputs
-public class CameraManager : MonoBehaviour
+public class CameraMovementManager : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
-    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private Rigidbody _cameraRigidbody;
+    [SerializeField] private Transform _cameraPivotTransform;
+    [SerializeField] private Rigidbody _cameraPivotRigidbody;
     
     [SerializeField] private float positionRelaxingSpeed = 5.0f;
     [SerializeField] private float minimumTranslationSpeed = 0.5f;
@@ -25,22 +28,25 @@ public class CameraManager : MonoBehaviour
         set => _speedMultiplier = value;
     }
     
-    private Vector3 _targetPosition;
+    [SerializeField] private Vector3 _targetPosition;
     public Vector3 TargetPosition
     {
         get => _targetPosition;
-        set
-        {
-            Debug.Log($"Target position = {value}");
-            _targetPosition = value;
-        }
+        set => _targetPosition = value;
     }
 
-    private Quaternion _targetRotation;
+    [SerializeField] private Quaternion _targetRotation;
     public Quaternion TargetRotation
     {
         get => _targetRotation;
         set => _targetRotation = value;
+    }
+
+    [SerializeField] private Quaternion _targetPivot;
+    public Quaternion TargetPivot
+    {
+        get => _targetPivot;
+        set => _targetPivot = value;
     }
 
     private float _targetFov;
@@ -52,7 +58,7 @@ public class CameraManager : MonoBehaviour
 
     void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        _cameraRigidbody = GetComponent<Rigidbody>();
 
         TargetFov = _camera.fieldOfView;
         TargetPosition = transform.position;
@@ -62,36 +68,37 @@ public class CameraManager : MonoBehaviour
     void Update()
     {
         UpdateCameraPosition();
-        UpdateCameraRotation();
+        UpdateRotation(_cameraRigidbody, TargetRotation);
+        UpdateRotation(_cameraPivotRigidbody, TargetPivot);
         UpdateFOV();
     }
 
     void UpdateCameraPosition()
     {
-        Vector3 translation = TargetPosition - transform.position;
+        Vector3 translation = TargetPosition - transform.localPosition;
         float displacement = translation.magnitude;
         if (displacement < minimumTranslationSpeed * Time.deltaTime)
         {
-            _rigidbody.MovePosition(TargetPosition);
+            _cameraRigidbody.MovePosition(TargetPosition);
         }
         else
         {
-            _rigidbody.MovePosition(transform.position + translation.normalized * (Time.deltaTime * Mathf.Max(SpeedMultiplier * positionRelaxingSpeed * displacement, minimumTranslationSpeed)));
+            _cameraRigidbody.MovePosition(transform.position + translation.normalized * (Time.deltaTime * Mathf.Max(SpeedMultiplier * positionRelaxingSpeed * displacement, minimumTranslationSpeed)));
         }
     }
-    
-    void UpdateCameraRotation()
+
+    void UpdateRotation(Rigidbody rb, Quaternion target)
     {
-        float totalAngle = Quaternion.Angle(transform.rotation, TargetRotation);
+        float totalAngle = Quaternion.Angle(rb.rotation, target);
         if (totalAngle < minimumRotationSpeed * Time.deltaTime)
         {
-            _rigidbody.MoveRotation(TargetRotation);
+            rb.MoveRotation(target);
         }
         else
         {
             float t = SpeedMultiplier * rotationRelaxingSpeed * Time.deltaTime;
             float angle = totalAngle * t;
-            _rigidbody.MoveRotation(Quaternion.Slerp(transform.rotation, TargetRotation, Mathf.Max(t, minimumRotationSpeed * Time.deltaTime / angle)));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, target, Mathf.Max(t, minimumRotationSpeed * Time.deltaTime / angle)));
         }
     }
 

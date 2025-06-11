@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
-    // UI elements 
+    [Header("UI")]
     [SerializeField] public GameObject teamAPanel;
     [SerializeField] public GameObject teamBPanel;
 
@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI currentDistanceText;
     [SerializeField] public TextMeshProUGUI bestDistanceText; // UI element to display distance
     
-    // Field Parameters
+    [Header("Parameters")]
     [SerializeField] private ThrowManager throwManager; 
     [SerializeField] private BallSpawner ballSpawner; //reference to the ball spawner
     
@@ -56,11 +56,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int targetScore = 13;
         
     
-    // Game state variables
-    private GameObject cochonnet;
-    private List<Ball> allBalls = new List<Ball>(); //how many balls are on the field
+    [Header("Game State")]
     public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
     public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
+    private List<Ball> allBalls = new List<Ball>(); //how many balls are on the field
+    private GameObject cochonnet;
     private Ball closest; //closest ball to the cochonnet
     private float closestDistance;
     

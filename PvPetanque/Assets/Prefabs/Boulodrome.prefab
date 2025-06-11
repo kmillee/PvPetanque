@@ -171,8 +171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2efd990ac22f1f44a89d1954b49650fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cochonnetPrefab: {fileID: 2741161862000362354, guid: f9e1a7c1e85536540bb2fb78934c2e83, type: 3}
-  ballPrefab: {fileID: 8062699783677659493, guid: 72ea9da79f96d1745901ce0f7e635654, type: 3}
+  cochonnetPrefab: {fileID: 3457647869550481711, guid: 20e5a2fe13066324781cee8aac5714a4, type: 3}
+  ballPrefab: {fileID: 3676687295103538163, guid: f4079d6b6ff257d4f8dac7d244c27600, type: 3}
   spawnPoint: {fileID: 6362052276356385250}
   ballMaterial: {fileID: 2100000, guid: 9289d24dc8a98514bb0612776f7ba255, type: 2}
 --- !u!1 &5188161921869783001

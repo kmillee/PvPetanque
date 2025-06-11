@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
         // Cochonnet time !
         roundPhase = RoundPhase.CochonnetThrow;
         cochonnet = ballSpawner.spawnCochonnet();
-        yield return throwManager.BallThrowSequence(cochonnet);
+        yield return throwManager.BallThrowCoroutine(cochonnet);
             
         Debug.Log("Cochonnet thrown, now it's time for the players to play!");
         
@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
         // Throw a new ball
         Ball ballScript = ballSpawner.spawnBall(currentTeam);
         RegisterBall(ballScript);
-        yield return throwManager.BallThrowSequence(ballScript.gameObject);
+        yield return throwManager.BallThrowCoroutine(ballScript.gameObject);
                 
         // Update scores
         ComputeTurnScores();

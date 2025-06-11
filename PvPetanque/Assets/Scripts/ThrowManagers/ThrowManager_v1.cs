@@ -8,14 +8,8 @@ using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
 
-public class ThrowManager : MonoBehaviour
+public class ThrowManager_v1 : ThrowManager
 {
-    private bool _ballThrowIsRunning = false;
-    
-    private Vector3 _startingPosition;
-    private GameObject _currentBall;
-    private Rigidbody _currentBallRb;
-    
     // indicators
     [SerializeField] private GameObject _indicatorsPrefab;
     private AimingIndicator _aimingIndicator;
@@ -72,18 +66,8 @@ public class ThrowManager : MonoBehaviour
     [SerializeField] private float ballFollowingFovExponent;
 
 
-    public IEnumerator BallThrowSequence(GameObject ball)
+    protected override IEnumerator BallThrowSequence(GameObject ball)
     {
-        
-        if (_ballThrowIsRunning)
-        {
-            Debug.Log("Launched a ballThrow coroutine but the previous one is not finished.");
-            yield break;
-        }
-        
-        _ballThrowIsRunning = true;
-        SetBall(ball);
-        
         yield return AimingStage();
 
         yield return CalibratingStage();
@@ -91,24 +75,10 @@ public class ThrowManager : MonoBehaviour
         yield return ReleasingStage();
         
         yield return FlightStage();
-        _ballThrowIsRunning = false;
     }
     
-    private void SetBall(GameObject ball)
+    protected override void SetUpBall(GameObject ball)
     {
-        _currentBall = ball;
-        _startingPosition = ball.transform.position;
-        
-        if (_currentBall.TryGetComponent<Rigidbody>(out _currentBallRb))
-        {
-            _currentBallRb.useGravity = false;
-        }
-        else
-        {
-            Debug.Log("No RigidBody found in ball gameobject.");
-            return;
-        }
-
         var indicators = Instantiate(_indicatorsPrefab, _currentBall.transform);
 
         if (indicators.TryGetComponent<AimingIndicator>(out _aimingIndicator))

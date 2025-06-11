@@ -9,6 +9,7 @@ public class TeamItemSlot : MonoBehaviour
     public GameObject buttonHighlight; // Optional: highlight if it's the team's turn
 
     [Header("Logic")]
+    public TooltipTrigger tooltipTrigger; // Reference to the tooltip trigger component
     public GameObject teamObject; // reference to team root/player if needed
 
     private GameEffect currentItem;
@@ -32,6 +33,7 @@ public class TeamItemSlot : MonoBehaviour
         }
 
         currentItem = newItem;
+        tooltipTrigger.currentItem = currentItem; // Update tooltip trigger with the new item
         RefreshUI();
     }
 
@@ -49,6 +51,7 @@ public class TeamItemSlot : MonoBehaviour
     public void ClearItem()
     {
         currentItem = null;
+        tooltipTrigger.currentItem = null; // Clear the tooltip trigger
         RefreshUI();
     }
 

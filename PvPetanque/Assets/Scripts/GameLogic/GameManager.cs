@@ -354,6 +354,10 @@ public class GameManager : MonoBehaviour
         bestDistanceText.text = $"Distance to beat: {closestDistance:F2} m";
         bestDistanceText.color = closest.Team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
     }
+    private void UpdateCurrentDistanceUI(float distance)
+    {
+        currentDistanceText.text = $"Distance : {distance:F2} m";
+    }
     private void UpdateLeadingTeamUI()
     {
         winningTeamText.text = $"{TeamData.GetTeamName(closest.Team)} ({pointsThisRound} pts)";
@@ -370,9 +374,7 @@ public class GameManager : MonoBehaviour
         while (aBallIsMoving)
         {
             float dist = Vector3.Distance(ball.transform.position, cochonnet.transform.position);
-            bestDistanceText.text = $"Distance: {dist:F2} m";
-            bestDistanceText.color = ball.Team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
-            
+            UpdateCurrentDistanceUI(dist);
             yield return new WaitForSeconds(0.2f);
         }
     }

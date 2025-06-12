@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
   m_Name: runnerPage
   m_EditorClassIdentifier: 
+  pageTitle: coin coin
   pageText: sittim is the opposite of standim
   pageImage: {fileID: 21300000, guid: 16f0ebbf3656b8148838623ff9d50765, type: 3}
   pageVideo: {fileID: 0}

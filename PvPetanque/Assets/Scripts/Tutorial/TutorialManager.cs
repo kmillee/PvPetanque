@@ -2,16 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using TMPro;
+using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 public class TutorialManager : MonoBehaviour
 {
-    public TutorialPage[] pages;
-    public TextMeshProUGUI textBox;
-    public Image imageBox;
-    public RawImage rawImage;
-    public VideoPlayer videoPlayer;
-    public GameObject nextButton;
-    public GameObject prevButton;
+    [SerializeField] private TutorialPage[] pages;
+    [SerializeField] private TextMeshProUGUI titleText;
+    [SerializeField] private TextMeshProUGUI textBox;
+    [SerializeField] private Image imageBox;
+    [SerializeField] private VideoPlayer videoPlayer;
+    [SerializeField] private RawImage rawImage;
+    [SerializeField] private GameObject prevButton;
+    [SerializeField] private GameObject nextButton;
+    
 
     private int currentIndex = 0;
 
@@ -27,6 +31,7 @@ public void ShowPage(int index)
     var page = pages[index];
 
     // Set text
+    titleText.text = page.pageTitle;
     textBox.text = page.pageText;
 
     // Show or hide image

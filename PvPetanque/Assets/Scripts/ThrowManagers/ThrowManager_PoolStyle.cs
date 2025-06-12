@@ -18,19 +18,19 @@ public class ThrowManager_PoolStyle : ThrowManager
     
     
     
-    protected override void SetUpBall(GameObject ball)
+    protected override void SetUpBall()
     {
         
     }
 
-    protected override IEnumerator BallThrowSequence(GameObject ball)
+    protected override IEnumerator BallThrowSequence()
     {
-        yield return AimingStage(ball);
+        yield return AimingStage();
 
-        yield return HittingStage(ball);
+        yield return HittingStage();
     }
 
-    private IEnumerator AimingStage(GameObject ball)
+    private IEnumerator AimingStage()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -47,16 +47,13 @@ public class ThrowManager_PoolStyle : ThrowManager
             // Adjust camera
             
             yield return null;
-            
-            //
-            break;
         }
         
         
         
     }
 
-    private IEnumerator HittingStage(GameObject ball)
+    private IEnumerator HittingStage()
     {
         yield break;
     }

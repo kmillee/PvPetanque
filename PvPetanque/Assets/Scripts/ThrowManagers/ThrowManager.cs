@@ -30,13 +30,13 @@ public abstract class ThrowManager : MonoBehaviour
             yield break;
         }
         
-        SetUpBall(ball);
+        SetUpBall();
 
-        yield return BallThrowSequence(ball);
+        yield return BallThrowSequence();
 
         _ballThrowIsRunning = false;
     }
 
-    protected abstract void SetUpBall(GameObject ball);
-    protected abstract IEnumerator BallThrowSequence(GameObject ball);
+    protected abstract void SetUpBall();
+    protected abstract IEnumerator BallThrowSequence();
 }

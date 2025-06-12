@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
     private GameObject cochonnet;
     private Ball closest; //closest ball to the cochonnet
     private float closestDistance;
+    private bool aBallIsMoving; // check for the state of the waitForBallsToStop coroutine 
     
     private int teamAScore; //score for team A
     private int teamBScore; //score for team B
@@ -191,15 +192,27 @@ public class GameManager : MonoBehaviour
         // Throw a new ball
         Ball ballScript = ballSpawner.spawnBall(currentTeam);
         RegisterBall(ballScript);
-        yield return throwManager.BallThrowCoroutine(ballScript.gameObject);
-                
+        
+        Coroutine showDistanceCoroutine = StartCoroutine(UpdateDistanceUIDynamicallyUntilBallsStop(ballScript));
+        Coroutine throwBallCoroutine = StartCoroutine(throwManager.BallThrowCoroutine(ballScript.gameObject));
+        yield return throwBallCoroutine;
+        ballScript.IsThrown = true;
+        yield return showDistanceCoroutine;
+        
         // Update scores
         ComputeTurnScores();
-                
+        
         // Update UI
         UpdateBestDistanceUI();
         UpdateLeadingTeamUI();
+        UpdateBallCountUI();
     }
+    
+    
+    
+    
+    
+    
     
     
     // Ball Logic
@@ -240,6 +253,24 @@ public class GameManager : MonoBehaviour
     }
     
     // Game logic
+    private IEnumerator WaitForBallsToStop()
+    {
+        aBallIsMoving = true;
+        
+        bool m = true;
+        while (m)
+        {
+            m = false;
+            foreach (Ball ball in allBalls)
+            {
+                if (ball.isMoving()) { m = true; }
+            }
+            yield return new WaitForSeconds(1f);
+        }
+        
+        aBallIsMoving = false;
+    }
+    
     private void ComputeTurnScores()
     {
         if (cochonnet == null || allBalls.Count == 0) return;
@@ -309,59 +340,64 @@ public class GameManager : MonoBehaviour
         teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
         teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";        
     }
-
     private void UpdateTeamScoreUI()
     {
         teamAScoreText.text = $"{teamAScore}";
         teamBScoreText.text = $"{teamBScore}";        
     }
-
     private void UpdateCurrentTeamUI()
     {
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";        
     }
-
     private void UpdateBestDistanceUI()
     {
         bestDistanceText.text = $"Distance to beat: {closestDistance:F2} m";
         bestDistanceText.color = closest.Team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
     }
-
     private void UpdateLeadingTeamUI()
     {
         winningTeamText.text = $"{TeamData.GetTeamName(closest.Team)} ({pointsThisRound} pts)";
     }
-
     private void UpdateWinnerUI()
     {
         Team winner = teamAScore > teamBScore ? Team.TeamA : Team.TeamB;
         winningTeamText.text = $"{TeamData.GetTeamName(winner)} wins!";
     }
+
+    private IEnumerator UpdateDistanceUIDynamicallyUntilBallsStop(Ball ball)
+    {
+        StartCoroutine(WaitForBallsToStop());
+        while (aBallIsMoving)
+        {
+            float dist = Vector3.Distance(ball.transform.position, cochonnet.transform.position);
+            bestDistanceText.text = $"Distance: {dist:F2} m";
+            bestDistanceText.color = ball.Team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
+            
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+    
     
     private void ShowRegularUI()
     {
         regularUI.SetActive(true);
         endGameUI.SetActive(false);
     }
-    
     private void ShowEndGameUI()
     {
         regularUI.SetActive(false);
         endGameUI.SetActive(true);
     }
-
     public void ChangeToMenu()
     {
         SceneManager.LoadScene("MenuScene");
     }
-
     public void RestartGame()
     {
         // Reset UI
         ShowRegularUI();
         StartGame();
     }
-    
     public Color GetTextColorForBackground(Color bgColor)
     {
         float luminance = 0.2126f * bgColor.r + 0.7152f * bgColor.g + 0.0722f * bgColor.b; // luminance using  formula for brightness

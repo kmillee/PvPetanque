@@ -67,10 +67,10 @@ public class CameraMovementManager : MonoBehaviour
     
     void Update()
     {
-        UpdateCameraPosition();
-        UpdateRotation(_cameraRigidbody, TargetRotation);
-        UpdateRotation(_cameraPivotRigidbody, TargetPivot);
-        UpdateFOV();
+        // UpdateCameraPosition();
+        // UpdateRotation(_cameraRigidbody, TargetRotation);
+        // UpdateRotation(_cameraPivotRigidbody, TargetPivot);
+        // UpdateFOV();
     }
 
     void UpdateCameraPosition()
@@ -92,13 +92,13 @@ public class CameraMovementManager : MonoBehaviour
         float totalAngle = Quaternion.Angle(rb.rotation, target);
         if (totalAngle < minimumRotationSpeed * Time.deltaTime)
         {
-            rb.MoveRotation(target);
+            rb.MoveRotation(target.normalized);
         }
         else
         {
             float t = SpeedMultiplier * rotationRelaxingSpeed * Time.deltaTime;
             float angle = totalAngle * t;
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, target, Mathf.Max(t, minimumRotationSpeed * Time.deltaTime / angle)));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, target, Mathf.Max(t, minimumRotationSpeed * Time.deltaTime / angle)).normalized);
         }
     }
 

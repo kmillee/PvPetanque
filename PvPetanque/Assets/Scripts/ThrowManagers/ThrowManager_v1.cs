@@ -66,7 +66,7 @@ public class ThrowManager_v1 : ThrowManager
     [SerializeField] private float ballFollowingFovExponent;
 
     
-    protected override void SetUpBall(GameObject ball)
+    protected override void SetUpBall()
     {
         var indicators = Instantiate(_indicatorsPrefab, _currentBall.transform);
 
@@ -102,7 +102,7 @@ public class ThrowManager_v1 : ThrowManager
         }
     }
     
-    protected override IEnumerator BallThrowSequence(GameObject ball)
+    protected override IEnumerator BallThrowSequence()
     {
         yield return AimingStage();
 

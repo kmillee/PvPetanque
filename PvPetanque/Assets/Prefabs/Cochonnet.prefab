@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 523761013226023015}
   - component: {fileID: 2685784637544413141}
   m_Layer: 0
-  m_Name: Cochonnet
+  m_Name: cochonnet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

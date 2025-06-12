@@ -50,7 +50,8 @@ public class GameManager : MonoBehaviour
     
     [Header("Parameters")]
     [SerializeField] private ThrowManager throwManager; 
-    [SerializeField] private BallSpawner ballSpawner; //reference to the ball spawner
+    [SerializeField] private BallSpawner ballSpawner;
+    [SerializeField] private ObstacleSpawner obstacleSpawner;
     
     [SerializeField] private int maxBallsPerTeam = 6; // max balls per team
     [SerializeField] private int targetScore = 13;
@@ -110,6 +111,12 @@ public class GameManager : MonoBehaviour
     {
         // Start game
         InitializeScore();
+        
+        // Spawn obstacles
+        obstacleSpawner.spawnObstacle();
+        yield return new WaitForSeconds(1.5f);
+        
+        // Rounds
         while (true)
         {
             yield return RoundCoroutine();

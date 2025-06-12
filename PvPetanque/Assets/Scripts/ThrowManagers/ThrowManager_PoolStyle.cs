@@ -44,17 +44,19 @@ public class ThrowManager_PoolStyle : ThrowManager
             Vector2 homogeneousMouseLook = _mouseLookAbsolute / aimingBounds;
             Vector2 mouseLook = aimingBounds * (2f * homogeneousMouseLook.Sigmoid() - Vector2.one);
             
+            Debug.Log($"{mouseLook}");
+            
             // Adjust camera
             
             yield return null;
         }
         
         
-        
     }
 
     private IEnumerator HittingStage()
     {
+        _currentBallRb.useGravity = true;
         yield break;
     }
 

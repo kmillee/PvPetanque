@@ -11,25 +11,23 @@ public class ObstacleSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Random.InitState(seed);
-        
         if (meshCollider == null)
         {
             Debug.LogError("MeshCollider component not found on the GameObject.");
             return;
         }
-
-        spawnObstacle();
     }
 
-    void spawnObstacle() {
+    public void spawnObstacle() 
+    {
+        Random.InitState(seed);
+    
         // Check if the obstacles array is not empty
         if (obstacles.Length == 0)
         {
             Debug.LogError("No obstacle prefabs assigned in the inspector.");
             return;
         }
-
 
         Vector3 center = meshCollider.bounds.center;
         Vector3 extents = meshCollider.bounds.extents;

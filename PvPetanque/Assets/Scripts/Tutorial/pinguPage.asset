@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pageText: "1st rule: don't talk about the p\xE9tanque."
   pageImage: {fileID: 21300000, guid: c46b7ac119568a5429e5694afdb65fb5, type: 3}
-  pageVideo: {fileID: 0}
+  pageVideo: {fileID: 32900000, guid: 571757bc2e851124c893d965ca2321ab, type: 3}

@@ -382,5 +382,10 @@ public class GameManager : MonoBehaviour
     }
 
 
+    public void OnBallDisqualified(Ball ball) {
+        allBalls.Remove(ball);
+        Destroy(ball.gameObject);
+    }
+
 }
 

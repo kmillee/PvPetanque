@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     [Header("Game Logic")]
     [SerializeField] private BallSpawner ballSpawner;
     public Cochonnet cochonnet;
-    public Team currentTeam; // Assuming team switching logic needs public access
+    public Team currentTeam;
 
     private int teamAScore = 0;
     private int teamBScore = 0;
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
         teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
         
         TargetScore = MatchSettingsData.goalScore;
-        currentTeam = Team.TeamA; //start with team A
+        currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
         winningTeamText.text = "None";
 

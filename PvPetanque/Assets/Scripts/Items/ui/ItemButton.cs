@@ -3,14 +3,16 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class ItemButton : MonoBehaviour, IPointerClickHandler
+public class ItemButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image iconImage;
     public TextMeshProUGUI nameText;
     public GameObject selectionOverlay;
 
+    public Tooltip tooltip; // Reference to the Tooltip script
+
     private bool isSelected = false;
-    private GameEffect item;
+    public GameEffect item;
 
     public void Setup(GameEffect itemData)
     {
@@ -20,9 +22,20 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler
         SetSelected(false); // Default: not selected
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        tooltip.ShowTooltip(item.description);
+        Debug.Log("ItemButton: OnPointerEnter called");
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        tooltip.HideTooltip();
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         ToggleSelected();
+        Debug.Log($"ItemButton: OnPointerClick called, isSelected: {isSelected}");
     }
 
     private void ToggleSelected()

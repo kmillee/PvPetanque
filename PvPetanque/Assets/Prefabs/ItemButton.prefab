@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 5865851789765188688}
   - component: {fileID: 8949373009503492979}
   - component: {fileID: 5955282247082805499}
+  - component: {fileID: 5291849673121960204}
   m_Layer: 5
   m_Name: ItemButton
   m_TagString: Untagged
@@ -276,6 +277,22 @@ MonoBehaviour:
   iconImage: {fileID: 3190686677363747199}
   nameText: {fileID: 6092624673764704994}
   selectionOverlay: {fileID: 7210885236519533707}
+  tooltip: {fileID: 2287080377658198179}
+  item: {fileID: 0}
+--- !u!114 &5291849673121960204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3640069649506950723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3ec26b7e18423a4fb07a1a62e029abe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltip: {fileID: 2287080377658198179}
+  currentItem: {fileID: 0}
 --- !u!1 &4363592663361565593
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,6 +304,7 @@ GameObject:
   - component: {fileID: 236153897422219083}
   - component: {fileID: 4082914375789094409}
   - component: {fileID: 3290234522849308316}
+  - component: {fileID: 2287080377658198179}
   m_Layer: 5
   m_Name: Tooltip
   m_TagString: Untagged
@@ -335,7 +353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.19339621, g: 0.19339621, b: 0.19339621, a: 0.9882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -352,6 +370,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2287080377658198179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4363592663361565593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf079a79c5d37d4ba60106546e26751, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 4363592663361565593}
+  tooltipText: {fileID: 6092624673764704994}
 --- !u!1 &7210885236519533707
 GameObject:
   m_ObjectHideFlags: 0

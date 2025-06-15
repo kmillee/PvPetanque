@@ -35,17 +35,21 @@ public class ItemSelectionMenu : MonoBehaviour
             if (button != null) allButtons.Add(button);
         }
 
-        // Assign GameEffects to each button
-        for (int i = 0; i < allButtons.Count && i < availableItems.Length; i++)
-        {
-            allButtons[i].Setup(availableItems[i]);
-        }
+       // Assign GameEffects to each button
+for (int i = 0; i < allButtons.Count; i++)
+{
+    if (i < availableItems.Length)
+    {
+        Debug.Log($"Assigning {availableItems[i]?.effectName ?? "null"} to button {i} ({allButtons[i].name})");
+        allButtons[i].Setup(availableItems[i]);
+    }
+    else
+    {
+        Debug.LogWarning($"No item for button {i} ({allButtons[i].name}), disabling.");
+        allButtons[i].gameObject.SetActive(false);
+    }
+}
 
-        // If fewer items than buttons, disable extra ones
-        for (int i = availableItems.Length; i < allButtons.Count; i++)
-        {
-            allButtons[i].gameObject.SetActive(false);
-        }
     }
 
     public void OpenItemMenu()

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
+
 
 // This script is used to trigger a tooltip when the mouse hovers over an object
 public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler

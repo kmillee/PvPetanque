@@ -19,7 +19,9 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         item = itemData;
         iconImage.sprite = item.icon;
         nameText.text = item.effectName;
-        SetSelected(false); // Default: not selected
+
+        isSelected = true;
+        SetSelected(true); // Default: not selected
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -46,7 +48,8 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void SetSelected(bool selected)
     {
-        selectionOverlay?.SetActive(selected);
+        isSelected = selected;
+        selectionOverlay?.SetActive(!selected); // show grey overlay when NOT selected   
     }
 
     public bool IsSelected() => isSelected;

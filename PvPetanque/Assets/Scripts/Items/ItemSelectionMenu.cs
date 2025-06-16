@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-
+using UnityEngine.EventSystems;
 
 public class ItemSelectionMenu : MonoBehaviour
 {
-    [Header("Item Selection Panel")]
+    [Header("UI References")]
     public GameObject itemPanel; // The panel that contains the item selection UI
+    public GraphicRaycaster raycaster;
+    public EventSystem eventSystem;
+
 
     [Header("Item Selection Menu")]
     public GameEffect[] availableItems; // The items to assign (6 max)
@@ -55,6 +58,37 @@ public class ItemSelectionMenu : MonoBehaviour
             }
         }
 
+    }
+
+    // close the menu and update selection when clicking outside the panel
+    void Update()
+    {
+        if (itemPanel.activeSelf && Input.GetMouseButtonDown(0))
+        {
+            // Pointer event
+            PointerEventData pointerData = new PointerEventData(eventSystem)
+            {
+                position = Input.mousePosition
+            };
+
+            List<RaycastResult> results = new List<RaycastResult>();
+            raycaster.Raycast(pointerData, results);
+
+            bool clickedOnPanel = false;
+            foreach (var result in results)
+            {
+                if (result.gameObject == itemPanel || result.gameObject.transform.IsChildOf(itemPanel.transform))
+                {
+                    clickedOnPanel = true;
+                    break;
+                }
+            }
+
+            if (!clickedOnPanel)
+            {
+                CloseItemMenu();
+            }
+        }
     }
 
     public void OpenItemMenu()

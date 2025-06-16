@@ -26,9 +26,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject teamAScorePanel;
     [SerializeField] private GameObject teamBScorePanel;
     [SerializeField] private GameObject endGameUI;
-    [SerializeField] private GameObject regularUI;
-    [SerializeField] private GameObject teamAItemPanel; 
-    [SerializeField] private GameObject teamBItemPanel; 
+    [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject teamAItemPanel;
+    [SerializeField] private GameObject teamBItemPanel;
 
     [Header("UI - Text Elements")]
     [SerializeField] private TextMeshProUGUI teamANameText;
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
         maxBallsPerTeam = MatchSettingsData.ballsPerTeam;
         teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
         teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
-        
+
         TargetScore = MatchSettingsData.goalScore;
         currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
@@ -341,7 +341,7 @@ public class GameManager : MonoBehaviour
 
     private void showEndGameUI()
     {
-        regularUI.SetActive(false);
+        gameUI.SetActive(false);
         endGameUI.SetActive(true);
     }
 
@@ -379,12 +379,12 @@ public class GameManager : MonoBehaviour
 
         // Reset UI and turn
         endGameUI.SetActive(false);
-        regularUI.SetActive(true);
+        gameUI.SetActive(true);
 
         // Spawn a new cochonnet
         ballSpawner.spawnCochonnet();
     }
-    
+
     public Color GetTextColorForBackground(Color bgColor)
     {
         float luminance = 0.2126f * bgColor.r + 0.7152f * bgColor.g + 0.0722f * bgColor.b; // luminance using  formula for brightness
@@ -392,9 +392,36 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void OnBallDisqualified(Ball ball) {
+    public void OnBallDisqualified(Ball ball)
+    {
         allBalls.Remove(ball);
         Destroy(ball.gameObject);
+    }
+
+
+    private bool mainCameraActive = true; // oui je sais c'est barbare de mettre ça ici, mais c'est pour que tu organises comme tu veux !
+    [SerializeField] private GameObject regularUI;
+
+    public void OnCameraButtonClicked()
+    {
+        Debug.Log("Camera button clicked!");
+
+        if (mainCameraActive)
+        {
+            // Switch to the second camera
+
+            // j'avais la flemme de m'arranger pour que buttonCamera soit sur un autre canvas, donc on désactive tout le reste
+            regularUI.SetActive(false);
+            mainCameraActive = false;
+
+        }
+        else
+        {
+            // Switch back to the main camera
+            regularUI.SetActive(true);
+            mainCameraActive = true;
+            
+        }
     }
 
 }

@@ -11,10 +11,10 @@ public static class MatchSettingsData
     public static int ballsPerTeam = 6;
 
     // These items are available to pick from
-    // public static List<GameEffect> availableItems = new List<GameEffect>();
+    public static List<GameEffect> availableItems = new List<GameEffect>();
 
     // // These are the selected items (used in the match)
-    // public static HashSet<GameEffect> selectedItems = new HashSet<GameEffect>();
+    public static HashSet<GameEffect> selectedItems = new HashSet<GameEffect>();
 
 
     //team names and colors
@@ -36,6 +36,13 @@ public static class MatchSettingsData
         teamColorA = Color.red;
         teamColorB = Color.blue;
         firstTeam = Team.TeamA;
+
+        for (int i = 0; i < availableItems.Count; i++)
+        {
+            
+            selectedItems.Add(availableItems[i]);
+            
+        }
 
         // selectedItems.Clear(); // clear selection
     }

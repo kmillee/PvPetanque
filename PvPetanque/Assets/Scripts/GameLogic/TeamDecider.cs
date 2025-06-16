@@ -15,8 +15,8 @@ public class TeamDecider : MonoBehaviour
     [SerializeField] private TMP_Text teamBLabel;
 
     [Header("Flip Settings")]
-    [SerializeField] private float flipDuration = 2f; // Total duration for flipping
-    [SerializeField] private float flipSpeed = 0.1f; // Speed of flipping
+    [SerializeField] private float flipDuration = 4f; // Total duration for flipping
+    [SerializeField] private float flipSpeed = 0.2f; // Speed of flipping
 
     [Header("Game Launch")]
     [SerializeField] private Button launchButton;
@@ -35,7 +35,7 @@ public class TeamDecider : MonoBehaviour
         originalTeamBName = MatchSettingsData.teamNameB;
         teamALabel.text = originalTeamAName;
         teamBLabel.text = originalTeamBName;
-        
+
         // Set initial colors
         teamAColor = MatchSettingsData.teamColorA;
         teamBColor = MatchSettingsData.teamColorB;

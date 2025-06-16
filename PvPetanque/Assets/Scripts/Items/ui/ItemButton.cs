@@ -11,7 +11,7 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public Tooltip tooltip; // Reference to the Tooltip script
 
-    private bool isSelected = false;
+    private bool isSelected = true;
     public GameEffect item;
 
     public void Setup(GameEffect itemData)
@@ -25,7 +25,7 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void OnPointerEnter(PointerEventData eventData)
     {
         tooltip.ShowTooltip(item.description);
-        Debug.Log("ItemButton: OnPointerEnter called");
+        // Debug.Log("ItemButton: OnPointerEnter called");
     }
     public void OnPointerExit(PointerEventData eventData)
     {

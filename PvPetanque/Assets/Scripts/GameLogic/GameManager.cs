@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
-[Header("UI - Panels")]
+    [Header("UI - Panels")]
     [SerializeField] private GameObject teamAPanel;
     [SerializeField] private GameObject teamBPanel;
     [SerializeField] private GameObject teamAScorePanel;
@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     [SerializeField] private int maxBallsPerTeam = 6;
     [SerializeField] private int TargetScore = 13;
+    [SerializeField] private List<GameEffect> selectedItems;
+
 
     [Header("Game Logic")]
     [SerializeField] private BallSpawner ballSpawner;
@@ -109,6 +111,10 @@ public class GameManager : MonoBehaviour
         currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
         winningTeamText.text = "None";
+
+        // set up item list
+        selectedItems = new List<GameEffect>(MatchSettingsData.selectedItems);
+
 
         // Spawn the cochonnet
         ballSpawner.spawnCochonnet();
@@ -216,6 +222,10 @@ public class GameManager : MonoBehaviour
             }
         }
         string teamName = TeamData.GetTeamName(closest.team);
+        if (teamName.Length > 10)
+        {
+            teamName = teamName.Substring(0, 10) + "...";
+        }
         winningTeamText.text = $"{teamName} ({pointsThisRound} pts)";
 
     }

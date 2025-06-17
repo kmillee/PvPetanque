@@ -3,26 +3,28 @@ using UnityEngine;
 
 public abstract class ThrowManager : MonoBehaviour
 {
-    protected bool _ballThrowIsRunning = false;
+    protected bool BallThrowIsRunning = false;
     
-    protected Vector3 _startingPosition;
-    protected GameObject _currentBall;
-    protected Rigidbody _currentBallRb;
+    protected Vector3 StartingPosition;
+    protected GameObject CurrentBall;
+    protected Rigidbody CurrentBallRb;
+    protected Ball CurrentBallScript;
 
-    public IEnumerator BallThrowCoroutine(GameObject ball)
+    public IEnumerator BallThrowCoroutine(Ball ballScript)
     {
-        if (_ballThrowIsRunning)
+        if (BallThrowIsRunning)
         {
             Debug.Log("Launched a BallThrow coroutine but the previous one is not finished.");
             yield break;
         }
-        _ballThrowIsRunning = true;
-        
-        _currentBall = ball;
-        _startingPosition = ball.transform.position;
-        if (_currentBall.TryGetComponent<Rigidbody>(out _currentBallRb))
+        BallThrowIsRunning = true;
+
+        CurrentBallScript = ballScript;
+        CurrentBall = ballScript.gameObject;
+        StartingPosition = ballScript.transform.position;
+        if (CurrentBall.TryGetComponent<Rigidbody>(out CurrentBallRb))
         {
-            _currentBallRb.useGravity = false;
+            CurrentBallRb.useGravity = false;
         }
         else
         {
@@ -30,13 +32,16 @@ public abstract class ThrowManager : MonoBehaviour
             yield break;
         }
         
-        SetUpBall();
-
+        SetUpThrow();
+        
         yield return BallThrowSequence();
 
-        _ballThrowIsRunning = false;
+        BallThrowIsRunning = false;
+        
+        CleanUpThrow();
     }
 
-    protected abstract void SetUpBall();
+    protected abstract void SetUpThrow();
+    protected abstract void CleanUpThrow();
     protected abstract IEnumerator BallThrowSequence();
 }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 257780793054596389}
   - component: {fileID: 5461582581771590563}
   - component: {fileID: 8964428338513231769}
+  - component: {fileID: -6372739996667150452}
   m_Layer: 0
   m_Name: Cochonnet
   m_TagString: Untagged
@@ -136,3 +137,15 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &-6372739996667150452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3457647869550481711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90945daa22aaf64479e4df9bf9e87ac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

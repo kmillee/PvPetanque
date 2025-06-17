@@ -36,9 +36,16 @@ public class BallSpawner : MonoBehaviour
     }
     
 
-    public GameObject spawnCochonnet()
+    public Cochonnet spawnCochonnet()
     {
-        return Instantiate(cochonnetPrefab, spawnPoint.position, Quaternion.identity, transform);
+        GameObject cochonnet = Instantiate(cochonnetPrefab, spawnPoint.position, Quaternion.identity, transform);
+        Cochonnet cochonnetScript;
+        if (!cochonnet.TryGetComponent<Cochonnet>(out cochonnetScript))
+        {
+            Debug.Log("No cochonnet script in cochonnet prefab");
+        }
+
+        return cochonnetScript;
     }
 
 }

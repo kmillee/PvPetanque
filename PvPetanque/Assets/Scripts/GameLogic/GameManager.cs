@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
     public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
     private List<Ball> allBalls = new List<Ball>(); //how many balls are on the field
     private GameObject cochonnet;
+    private Cochonnet cochonnetScript;
     private Ball closest; //closest ball to the cochonnet
     private float closestDistance;
     private bool aBallIsMoving; // check for the state of the waitForBallsToStop coroutine 
@@ -145,8 +146,10 @@ public class GameManager : MonoBehaviour
 
         // Cochonnet time !
         roundPhase = RoundPhase.CochonnetThrow;
-        cochonnet = ballSpawner.spawnCochonnet();
-        yield return throwManager.BallThrowCoroutine(cochonnet);
+        cochonnetScript = ballSpawner.spawnCochonnet();
+        cochonnet = cochonnetScript.gameObject;
+        yield return throwManager.BallThrowCoroutine(cochonnetScript);
+        yield return WaitForBallsToStop();
             
         Debug.Log("Cochonnet thrown, now it's time for the players to play!");
         
@@ -201,10 +204,11 @@ public class GameManager : MonoBehaviour
         RegisterBall(ballScript);
         
         Coroutine showDistanceCoroutine = StartCoroutine(UpdateDistanceUIDynamicallyUntilBallsStop(ballScript));
-        Coroutine throwBallCoroutine = StartCoroutine(throwManager.BallThrowCoroutine(ballScript.gameObject));
+        Coroutine throwBallCoroutine = StartCoroutine(throwManager.BallThrowCoroutine(ballScript));
         yield return throwBallCoroutine;
-        ballScript.IsThrown = true;
         yield return showDistanceCoroutine;
+
+        yield return WaitForBallsToStop();
         
         // Update scores
         ComputeTurnScores();
@@ -272,6 +276,8 @@ public class GameManager : MonoBehaviour
             {
                 if (ball.isMoving()) { m = true; }
             }
+            if (cochonnetScript.isMoving()) { m = true; }
+            
             yield return new WaitForSeconds(1f);
         }
         

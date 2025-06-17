@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Cochonnet : MonoBehaviour
+public class Cochonnet : Ball
 {
 
 }

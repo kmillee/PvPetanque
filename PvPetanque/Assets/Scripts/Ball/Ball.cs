@@ -3,24 +3,25 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    private Team _team;
+    private Rigidbody rb;
+
+    private Team team;
     public Team Team
     {
-        get => _team;
-        set => _team = value;
+        get => team;
+        set => team = value;
     }
 
-    private Rigidbody _rb;
-    
-    private bool _isThrown = false;
-    public bool IsThrown
+    private bool hitGround = false;
+    public bool HitGround
     {
-        set => _isThrown = value;
+        get => hitGround;
     }
     
-    private void Awake()
+    
+    private void Start()
     {
-        if (!TryGetComponent<Rigidbody>(out _rb))
+        if (!TryGetComponent<Rigidbody>(out rb))
         {
             Debug.Log("Ball has no rigidbody component.");
         }
@@ -28,6 +29,14 @@ public class Ball : MonoBehaviour
 
     public bool isMoving(float epsilon = 0.01f)
     {
-        return !_isThrown || _rb.linearVelocity.magnitude > epsilon;
+        return hitGround && rb.linearVelocity.magnitude > epsilon;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!hitGround && other.CompareTag("Ground"))
+        {
+            hitGround = true;
+        }
     }
 }

@@ -91,6 +91,9 @@ public class ThrowManager_PoolStyle : ThrowManager
         {
             // Left click to start hitting
             if (Input.GetMouseButtonDown(0)) { break; }
+
+            // Right click to reset orientation
+            if (Input.GetMouseButtonDown(1)) { mouseLookAbsolute = Vector2.zero; }
             
             // Press space to unlock cursor
             if (Input.GetKeyDown("space"))
@@ -98,14 +101,13 @@ public class ThrowManager_PoolStyle : ThrowManager
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
 
-                while (!Input.GetKeyUp("space")) { yield return null; }
+                do { yield return null; } while (!Input.GetKeyDown("space"));
 
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
             
-            // Right click to reset orientation
-            if (Input.GetMouseButtonDown(1)) { mouseLookAbsolute = Vector2.zero; }
+
             
             
             // Compute new angle
@@ -118,9 +120,6 @@ public class ThrowManager_PoolStyle : ThrowManager
             
             yield return null;
         }
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
 
         aimingCamera.Priority = 0;
     }
@@ -202,6 +201,11 @@ public class ThrowManager_PoolStyle : ThrowManager
         }
         
         flightCamera.Priority = 0;
+        
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
+    
     
 }

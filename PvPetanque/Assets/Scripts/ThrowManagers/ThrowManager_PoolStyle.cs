@@ -2,7 +2,9 @@ using System.Collections;
 using System.Numerics;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
@@ -14,6 +16,7 @@ public class ThrowManager_PoolStyle : ThrowManager
     [SerializeField] private GameObject indicatorsPrefab;
     private GameObject indicator;
     private CalibratingIndicator calibratingIndicator;
+    private Renderer springRenderer;
     
     [Header("AimingSettings")] 
     [SerializeField] private float mouseSensitivity = 1f;
@@ -33,7 +36,10 @@ public class ThrowManager_PoolStyle : ThrowManager
     [SerializeField] private float springConstant = 1f;
     [SerializeField] private float extendingPower = 1f;
     [SerializeField] private float maxHitDuration = 1f;
+    [SerializeField] private Gradient springColor;
     
+    // Flight stage
+    [SerializeField] private float maxTimer = 30f;
     
     protected override void SetUpThrow()
     {
@@ -47,6 +53,11 @@ public class ThrowManager_PoolStyle : ThrowManager
         {
             Debug.Log("No calibratingIndicator found in indicators prefab.");
             return;
+        }
+
+        if (!calibratingIndicator.GetSpring().TryGetComponent(out springRenderer))
+        {
+            Debug.Log("No Renderer found on spring in indicator prefab.");
         }
         
         // Cameras set up
@@ -107,9 +118,6 @@ public class ThrowManager_PoolStyle : ThrowManager
                 Cursor.visible = false;
             }
             
-
-            
-            
             // Compute new angle
             mouseLookAbsolute += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * mouseSensitivity;
             Vector2 homogeneousMouseLook = mouseLookAbsolute / aimingBounds;
@@ -129,11 +137,12 @@ public class ThrowManager_PoolStyle : ThrowManager
         // Camera set up
         hittingCamera.Priority = 10;
         calibratingIndicator.Display(true);
-
-        // 
+        
         hitStrength = 0f;
         float effectiveSpringConstant = springConstant * CurrentBallRb.mass;
         float effectiveExtendingPower = extendingPower * CurrentBallRb.mass;
+
+        float maxLength = Mathf.Sqrt(2f * maxHitDuration * effectiveExtendingPower / effectiveSpringConstant);
         
         // Wait for button release
         float start = Time.time;
@@ -152,6 +161,7 @@ public class ThrowManager_PoolStyle : ThrowManager
             
             // Animation
             calibratingIndicator.UpdateLength(extendedSpringLength);
+            springRenderer.material.color = springColor.Evaluate(extendedSpringLength / maxLength);
             
             yield return null;
         }
@@ -168,6 +178,7 @@ public class ThrowManager_PoolStyle : ThrowManager
 
             // Animation
             calibratingIndicator.UpdateLength(releasedSpringLength);
+            springRenderer.material.color = springColor.Evaluate(releasedSpringLength / maxLength);
 
             yield return null;
         }
@@ -187,14 +198,17 @@ public class ThrowManager_PoolStyle : ThrowManager
         CurrentBallRb.useGravity = true;
         Vector3 hitDirection = CurrentBall.transform.rotation * Vector3.forward;
         CurrentBallRb.AddForce(hitStrength * hitDirection, ForceMode.Impulse);
+        CurrentBallScript.Launch();
 
         // Wait for the force to be applied
         while (CurrentBallRb.linearVelocity == Vector3.zero)
         {
             yield return null;
         }
+
         
         // Wait for the ball to hit the ground
+        float flightStart = Time.time;
         while (!CurrentBallScript.HitGround)
         {
             // Make sure the ball stay in bounds
@@ -204,12 +218,19 @@ public class ThrowManager_PoolStyle : ThrowManager
                 boundsTest++;
                 if (boundsTest >= 5)
                 {
-                    Debug.Log("disqualified ball"); // TODO
-                    // CurrentBall.SetActive(false);
+                    Debug.Log("out of bounds");
+                    CurrentBallScript.Disqualify();
                     yield break;
                 }
                 
                 yield return new WaitForSeconds(0.25f);
+            }
+
+            if (Time.time - flightStart >= maxTimer)
+            {
+                Debug.Log("out of time");
+                CurrentBallScript.Disqualify();
+                yield break;
             }
             
             yield return null;

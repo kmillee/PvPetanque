@@ -6,7 +6,9 @@ public class CalibratingIndicator : MonoBehaviour
 {
 
     [SerializeField] private GameObject calibratingIndicatorGameObject;
+    [SerializeField] private GameObject spring;
     [SerializeField] private GameObject tip;
+    
     private float _widthx, _widthz;
 
     private void OnEnable()
@@ -34,6 +36,11 @@ public class CalibratingIndicator : MonoBehaviour
     public GameObject GetTip()
     {
         return tip;
+    }
+
+    public GameObject GetSpring()
+    {
+        return spring;
     }
 
 }

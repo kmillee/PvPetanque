@@ -5,54 +5,40 @@ public class Ball : MonoBehaviour
 {
     private Rigidbody rb;
 
-    private Team team;
-    public Team Team
-    {
-        get => team;
-        set => team = value;
-    }
+    public Team Team { get; set; }
+    public bool Launched { get; private set; } = false;
+    public bool HitGround { get; private set; } = false;
+    public bool InBounds { get; private set; } = true;
 
-    private bool isCurrentlyMoving = false;
-    private bool isDisqualified = false;
-    private float timer = 0f;
-    [SerializeField] private float maxTimer = 30f;
 
-    private bool hitGround = false;
-    public bool HitGround
-    {
-        get => hitGround;
-    }
-
-    private bool inBounds = false;
-    public bool InBounds
-    {
-        get => inBounds;
-    }
-    
-    
-    private void Start()
+    private void Awake()
     {
         if (!TryGetComponent<Rigidbody>(out rb))
         {
             Debug.Log("Ball has no rigidbody component.");
-        }
+        } 
     }
 
-    public bool isMoving(float epsilon = 0.01f)
+    public void Launch()
     {
-        return hitGround && rb.linearVelocity.magnitude > epsilon;
+        Launched = true;
+    }
+
+    public bool IsMoving(float epsilon = 0.01f)
+    {
+        return rb.linearVelocity.magnitude > epsilon;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!hitGround && other.CompareTag("Ground"))
+        if (!HitGround && other.CompareTag("Ground"))
         {
-            hitGround = true;
+            HitGround = true;
         }
 
         if (other.CompareTag("TerrainBounds"))
         {
-            inBounds = true;
+            InBounds = true;
         }
     }
 
@@ -60,58 +46,13 @@ public class Ball : MonoBehaviour
     {
         if (other.CompareTag("TerrainBounds"))
         {
-            inBounds = false;
-        }
-
-    }
-
-    void Update() 
-    {
-        if(isDisqualified) return;
-
-        if(isCurrentlyMoving) 
-        {
-            timer += Time.deltaTime;
-            Debug.Log($"Ball {gameObject.name} is moving. Timer: {timer:F2}s");
-            if(!isMoving() && timer > 0.1f) 
-            {
-                isCurrentlyMoving = false;
-                timer = 0f; // Reset timer when the ball stops moving
-                Debug.Log($"Ball {gameObject.name} has stopped moving.");
-            }
-
-            if (timer >= maxTimer) 
-            {
-                Disqualify();
-                GameManager gm = FindObjectOfType<GameManager>();
-                if (gm != null) 
-                {
-                    gm.OnBallDisqualified(this);
-                } 
-                else 
-                {
-                    Debug.LogWarning("GameManager not found. Cannot call OnBallDisqualified.");
-                }
-            }
-        }   
-
-        if(!isCurrentlyMoving && isMoving()) 
-        {
-            Debug.Log($"Ball {gameObject.name} has started moving.");
-            isCurrentlyMoving = true; 
-            timer = 0f; // Reset timer when the ball starts moving
+            InBounds = false;
         }
     }
-
-    public void StartThrownTimer() 
+    
+    public void Disqualify() 
     {
-        isCurrentlyMoving = true;
-        timer = 0f; 
-    }
-
-    private void Disqualify() 
-    {
-        isDisqualified = true;
         Debug.Log($"Ball {gameObject.name} has been disqualified.");
+        GameManager.instance.OnBallDisqualified(this);
     }
 }

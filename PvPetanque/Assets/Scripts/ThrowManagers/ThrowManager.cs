@@ -39,6 +39,7 @@ public abstract class ThrowManager : MonoBehaviour
         BallThrowIsRunning = false;
         
         CleanUpThrow();
+        
     }
 
     protected abstract void SetUpThrow();

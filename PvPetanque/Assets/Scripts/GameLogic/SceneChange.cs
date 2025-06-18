@@ -5,7 +5,7 @@ public class SceneChange : MonoBehaviour
 {
     public GameObject settingsUI;
     public GameObject menuUI;
-
+    public GameObject tutorialUI;
 
     public void changeToGame()
     {
@@ -29,6 +29,20 @@ public class SceneChange : MonoBehaviour
             menuUI.SetActive(false);
         }
 
+    }
+
+    public void switchTutorial()
+    {
+        if (tutorialUI.activeSelf)
+        {
+            tutorialUI.SetActive(false);
+            menuUI.SetActive(true);
+        }
+        else
+        {
+            tutorialUI.SetActive(true);
+            menuUI.SetActive(false);
+        }
     }
 
     public void quitGame()

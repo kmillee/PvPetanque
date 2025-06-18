@@ -27,26 +27,27 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
-    [Header("UI")]
-    [SerializeField] public GameObject teamAPanel;
-    [SerializeField] public GameObject teamBPanel;
+    [Header("UI - Panels")]
+    [SerializeField] private GameObject teamAPanel;
+    [SerializeField] private GameObject teamBPanel;
+    [SerializeField] private GameObject teamAScorePanel;
+    [SerializeField] private GameObject teamBScorePanel;
+    [SerializeField] private GameObject endGameUI;
+    [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject teamAItemPanel;
+    [SerializeField] private GameObject teamBItemPanel;
 
-    [SerializeField] public GameObject teamAScorePanel;
-    [SerializeField] public GameObject teamBScorePanel;
-    [SerializeField] public TextMeshProUGUI teamANameText; // Text element for team A name
-    [SerializeField] public TextMeshProUGUI teamBNameText; // Text element for team B name
-    [SerializeField] public GameObject endGameUI; // UI element to show at the end of the game
-    [SerializeField] public GameObject regularUI; // UI element to show during the game
-    [SerializeField] public TextMeshProUGUI winningTeamText;
-    [SerializeField] public TextMeshProUGUI teamABallsText;
-    [SerializeField] public TextMeshProUGUI teamBBallsText;
-
-    [SerializeField] public TextMeshProUGUI teamAScoreText;
-    [SerializeField] public TextMeshProUGUI teamBScoreText;
-
-    [SerializeField] public TextMeshProUGUI currentPlayerText;
-    [SerializeField] public TextMeshProUGUI currentDistanceText;
-    [SerializeField] public TextMeshProUGUI bestDistanceText; // UI element to display distance
+    [Header("UI - Text Elements")]
+    [SerializeField] private TextMeshProUGUI teamANameText;
+    [SerializeField] private TextMeshProUGUI teamBNameText;
+    [SerializeField] private TextMeshProUGUI winningTeamText;
+    [SerializeField] private TextMeshProUGUI teamABallsText;
+    [SerializeField] private TextMeshProUGUI teamBBallsText;
+    [SerializeField] private TextMeshProUGUI teamAScoreText;
+    [SerializeField] private TextMeshProUGUI teamBScoreText;
+    [SerializeField] private TextMeshProUGUI currentPlayerText;
+    public TextMeshProUGUI currentDistanceText;
+    [SerializeField] private TextMeshProUGUI bestDistanceText;
     
     [Header("Parameters")]
     [SerializeField] private ThrowManager throwManager; 
@@ -335,6 +336,9 @@ public class GameManager : MonoBehaviour
         teamAPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
 
+        teamAItemPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
+        teamBItemPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
+
         teamAScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
         teamAScorePanel.GetComponentInChildren<TextMeshProUGUI>().color = GetTextColorForBackground(MatchSettingsData.teamColorA);
@@ -400,7 +404,7 @@ public class GameManager : MonoBehaviour
     }
     private void ShowEndGameUI()
     {
-        regularUI.SetActive(false);
+        gameUI.SetActive(false);
         endGameUI.SetActive(true);
     }
     public void ChangeToMenu()
@@ -419,6 +423,38 @@ public class GameManager : MonoBehaviour
         return luminance > 0.5f ? Color.black : Color.white;
     }
 
+
+    public void OnBallDisqualified(Ball ball)
+    {
+        allBalls.Remove(ball);
+        Destroy(ball.gameObject);
+    }
+
+
+    private bool mainCameraActive = true; // oui je sais c'est barbare de mettre ça ici, mais c'est pour que tu organises comme tu veux !
+    [SerializeField] private GameObject regularUI;
+
+    public void OnCameraButtonClicked()
+    {
+        Debug.Log("Camera button clicked!");
+
+        if (mainCameraActive)
+        {
+            // Switch to the second camera
+
+            // j'avais la flemme de m'arranger pour que buttonCamera soit sur un autre canvas, donc on désactive tout le reste
+            regularUI.SetActive(false);
+            mainCameraActive = false;
+
+        }
+        else
+        {
+            // Switch back to the main camera
+            regularUI.SetActive(true);
+            mainCameraActive = true;
+            
+        }
+    }
 
 }
 

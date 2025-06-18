@@ -12,6 +12,11 @@ public class Ball : MonoBehaviour
         set => team = value;
     }
 
+    private bool isCurrentlyMoving = false;
+    private bool isDisqualified = false;
+    private float timer = 0f;
+    [SerializeField] private float maxTimer = 30f;
+
     private bool hitGround = false;
     public bool HitGround
     {
@@ -57,5 +62,56 @@ public class Ball : MonoBehaviour
         {
             inBounds = false;
         }
+
+    }
+
+    void Update() 
+    {
+        if(isDisqualified) return;
+
+        if(isCurrentlyMoving) 
+        {
+            timer += Time.deltaTime;
+            Debug.Log($"Ball {gameObject.name} is moving. Timer: {timer:F2}s");
+            if(!isMoving() && timer > 0.1f) 
+            {
+                isCurrentlyMoving = false;
+                timer = 0f; // Reset timer when the ball stops moving
+                Debug.Log($"Ball {gameObject.name} has stopped moving.");
+            }
+
+            if (timer >= maxTimer) 
+            {
+                Disqualify();
+                GameManager gm = FindObjectOfType<GameManager>();
+                if (gm != null) 
+                {
+                    gm.OnBallDisqualified(this);
+                } 
+                else 
+                {
+                    Debug.LogWarning("GameManager not found. Cannot call OnBallDisqualified.");
+                }
+            }
+        }   
+
+        if(!isCurrentlyMoving && isMoving()) 
+        {
+            Debug.Log($"Ball {gameObject.name} has started moving.");
+            isCurrentlyMoving = true; 
+            timer = 0f; // Reset timer when the ball starts moving
+        }
+    }
+
+    public void StartThrownTimer() 
+    {
+        isCurrentlyMoving = true;
+        timer = 0f; 
+    }
+
+    private void Disqualify() 
+    {
+        isDisqualified = true;
+        Debug.Log($"Ball {gameObject.name} has been disqualified.");
     }
 }

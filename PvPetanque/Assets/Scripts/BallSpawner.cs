@@ -8,11 +8,44 @@ public class BallSpawner : MonoBehaviour
 
     public Material ballMaterial;
 
+    public TeamItemSlot teamASlot;
+    public TeamItemSlot teamBSlot;
+
+
+    public void spawnBall()
+    {
+        GameObject newBall = Instantiate(ballPrefab, spawnPoint.position, Quaternion.identity);
+        Ball ballScript = newBall.GetComponent<Ball>();
+
+        // Set team before assigning material
+        ballScript.Team = GameManager.instance.currentTeam;
+
+        Renderer renderer = newBall.GetComponent<Renderer>();
+
+        Material teamMaterial;
+        if (ballScript.Team == Team.TeamA)
+        {
+            teamMaterial = new Material(ballMaterial);
+            teamMaterial.color = MatchSettingsData.teamColorA;
+            if(teamASlot != null)
+                teamASlot.SetTeamObject(newBall);
+        }
+        else
+        {
+            teamMaterial = new Material(ballMaterial);
+            teamMaterial.color = MatchSettingsData.teamColorB;
+            if(teamBSlot != null)
+                teamBSlot.SetTeamObject(newBall);
+        }
+        renderer.material = teamMaterial;
+    }
+
     public Ball spawnBall(Team currentTeam)
     {
         GameObject newBall = Instantiate(ballPrefab, spawnPoint.position, Quaternion.identity);
         return spawnBall(newBall, currentTeam);
     }
+
     
     public Ball spawnBall(GameObject ball, Team currentTeam)
     {

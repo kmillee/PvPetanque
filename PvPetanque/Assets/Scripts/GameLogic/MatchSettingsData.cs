@@ -4,15 +4,26 @@ using System.Collections.Generic;
 public static class MatchSettingsData
 {
     // Match settings data class to store and manage game settings
+    [Header("Match Settings")]
+    public static Team firstTeam = Team.TeamA; // Default first team
+
     public static int goalScore = 13;
     public static int ballsPerTeam = 6;
+
+    // These items are available to pick from
+    public static List<GameEffect> availableItems = new List<GameEffect>();
+
+    // // These are the selected items (used in the match)
+    public static HashSet<GameEffect> selectedItems = new HashSet<GameEffect>();
+
+
+    //team names and colors
+    [Header("Teams")]
     public static string teamNameA = "Team A";
     public static string teamNameB = "Team B";
 
     public static Color teamColorA = Color.red;
     public static Color teamColorB = Color.blue;
-
-    public static Team firstTeam = Team.TeamA; // Default first team
 
 
     // Method to reset settings to default values
@@ -25,5 +36,14 @@ public static class MatchSettingsData
         teamColorA = Color.red;
         teamColorB = Color.blue;
         firstTeam = Team.TeamA;
+
+        for (int i = 0; i < availableItems.Count; i++)
+        {
+            
+            selectedItems.Add(availableItems[i]);
+            
+        }
+
+        // selectedItems.Clear(); // clear selection
     }
 }

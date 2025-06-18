@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class ColorOption
 {
+    
     public string colorName;
     public Color color;
 }
@@ -59,6 +60,7 @@ public class TeamColorPicker : MonoBehaviour
 
         // Combine both lines into one list of buttons
         foreach (Transform child in topLineContainer)
+
             allColorButtons.Add(child.GetComponent<Button>());
 
         foreach (Transform child in bottomLineContainer)

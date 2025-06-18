@@ -197,6 +197,21 @@ public class ThrowManager_PoolStyle : ThrowManager
         // Wait for the ball to hit the ground
         while (!CurrentBallScript.HitGround)
         {
+            // Make sure the ball stay in bounds
+            int boundsTest = 0;
+            while (!CurrentBallScript.InBounds)
+            {
+                boundsTest++;
+                if (boundsTest >= 5)
+                {
+                    Debug.Log("disqualified ball"); // TODO
+                    // CurrentBall.SetActive(false);
+                    yield break;
+                }
+                
+                yield return new WaitForSeconds(0.25f);
+            }
+            
             yield return null;
         }
         

@@ -17,6 +17,12 @@ public class Ball : MonoBehaviour
     {
         get => hitGround;
     }
+
+    private bool inBounds = false;
+    public bool InBounds
+    {
+        get => inBounds;
+    }
     
     
     private void Start()
@@ -37,6 +43,19 @@ public class Ball : MonoBehaviour
         if (!hitGround && other.CompareTag("Ground"))
         {
             hitGround = true;
+        }
+
+        if (other.CompareTag("TerrainBounds"))
+        {
+            inBounds = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("TerrainBounds"))
+        {
+            inBounds = false;
         }
     }
 }

@@ -10,11 +10,17 @@ public class CalibratingIndicator : MonoBehaviour
     [SerializeField] private GameObject tip;
     
     private float _widthx, _widthz;
+    [SerializeField] private float canonLength;
+    private float Cx, Cz;
 
     private void OnEnable()
     {
-        _widthx = transform.localScale.x;
-        _widthz = transform.localScale.z;
+        _widthx = calibratingIndicatorGameObject.transform.localScale.x;
+        _widthz = calibratingIndicatorGameObject.transform.localScale.z;
+
+        Cx = _widthx * canonLength;
+        Cz = _widthz * canonLength;
+
     }
 
     public void SetWidth(float widthx, float widthz)
@@ -30,7 +36,18 @@ public class CalibratingIndicator : MonoBehaviour
     
     public void UpdateLength(float length)
     {
-        calibratingIndicatorGameObject.transform.localScale = new Vector3(_widthx, length, _widthz);
+        if (length > 0)
+        {
+            float wx = Mathf.Min(_widthx, Cx / length);
+            float wz = Mathf.Min(_widthz, Cz / length);
+
+            calibratingIndicatorGameObject.transform.localScale = new Vector3(wx, length, wz);
+        }
+        else
+        {
+            calibratingIndicatorGameObject.transform.localScale = new Vector3(_widthx, length, _widthz);
+        }
+
     }
 
     public GameObject GetTip()

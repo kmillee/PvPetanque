@@ -77,7 +77,8 @@ public class TeamItemSlot : MonoBehaviour
             buttonHighlight.SetActive(currentItem != null);
     }
 
-    public void SetTeamObject(GameObject obj) {
+    public void SetTeamObject(GameObject obj) 
+    {
         teamObject = obj;
     }
 

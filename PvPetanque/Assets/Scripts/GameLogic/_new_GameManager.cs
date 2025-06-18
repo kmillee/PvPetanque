@@ -5,58 +5,54 @@ using UnityEngine.UI;
 using System.Collections;
 using System;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 
-public enum RoundPhase //should add draw phase maybe (or will be done in the menu)
+// public enum RoundPhase //should add draw phase maybe (or will be done in the menu)
+// {
+//     CochonnetThrow,
+//     PlayerTurn,
+//     EndRound,
+//     EndGame,
+//     
+// }
+
+
+
+
+// TODO: for now, a new turn begins with teamA, needs to introduce a draw phase
+public class _new_GameManager : MonoBehaviour
 {
-    CochonnetThrow,
-    PlayerTurn,
-    EndRound,
-    EndGame,
+    public static _new_GameManager instance; //singleton instance
+
+    [Header("UI")]
+    [SerializeField] public GameObject teamAPanel;
+    [SerializeField] public GameObject teamBPanel;
+
+    [SerializeField] public GameObject teamAScorePanel;
+    [SerializeField] public GameObject teamBScorePanel;
+    [SerializeField] public TextMeshProUGUI teamANameText; // Text element for team A name
+    [SerializeField] public TextMeshProUGUI teamBNameText; // Text element for team B name
+    [SerializeField] public GameObject endGameUI; // UI element to show at the end of the game
+    [SerializeField] public GameObject regularUI; // UI element to show during the game
+    [SerializeField] public TextMeshProUGUI winningTeamText;
+    [SerializeField] public TextMeshProUGUI teamABallsText;
+    [SerializeField] public TextMeshProUGUI teamBBallsText;
+
+    [SerializeField] public TextMeshProUGUI teamAScoreText;
+    [SerializeField] public TextMeshProUGUI teamBScoreText;
+
+    [SerializeField] public TextMeshProUGUI currentPlayerText;
+    [SerializeField] public TextMeshProUGUI currentDistanceText;
+    [SerializeField] public TextMeshProUGUI bestDistanceText; // UI element to display distance
     
-}
-
-public class BoolReference
-{
-    public bool Value = true;
-}
-
-public class GameManager : MonoBehaviour
-{
-    public static GameManager instance; //singleton instance
-
-    [Header("UI - Panels")]
-    [SerializeField] private GameObject teamAPanel;
-    [SerializeField] private GameObject teamBPanel;
-    [SerializeField] private GameObject teamAScorePanel;
-    [SerializeField] private GameObject teamBScorePanel;
-    [SerializeField] private GameObject endGameUI;
-    [SerializeField] private GameObject gameUI;
-    [SerializeField] private GameObject teamAItemPanel;
-    [SerializeField] private GameObject teamBItemPanel;
-
-    [Header("UI - Text Elements")]
-    [SerializeField] private TextMeshProUGUI teamANameText;
-    [SerializeField] private TextMeshProUGUI teamBNameText;
-    [SerializeField] private TextMeshProUGUI winningTeamText;
-    [SerializeField] private TextMeshProUGUI teamABallsText;
-    [SerializeField] private TextMeshProUGUI teamBBallsText;
-    [SerializeField] private TextMeshProUGUI teamAScoreText;
-    [SerializeField] private TextMeshProUGUI teamBScoreText;
-    [SerializeField] private TextMeshProUGUI currentPlayerText;
-    public TextMeshProUGUI currentDistanceText;
-    [SerializeField] private TextMeshProUGUI bestDistanceText;
-    
-    [Header("Game Settings")]
-    [SerializeField] private int maxBallsPerTeam = 6;
-    [SerializeField] private int targetScore = 13;
-    [SerializeField] private List<GameEffect> selectedItems;
-    
-    [Header("Game Logic")]
+    [Header("Parameters")]
     [SerializeField] private ThrowManager throwManager; 
     [SerializeField] private BallSpawner ballSpawner;
     [SerializeField] private ObstacleSpawner obstacleSpawner;
+    
+    [SerializeField] private int maxBallsPerTeam = 6; // max balls per team
+    [SerializeField] private int targetScore = 13;
+        
     
     [Header("Game State")]
     public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
@@ -66,6 +62,7 @@ public class GameManager : MonoBehaviour
     private Cochonnet cochonnetScript;
     private Ball closest; //closest ball to the cochonnet
     private float closestDistance;
+    private bool aBallIsMoving; // check for the state of the waitForBallsToStop coroutine 
     
     private int teamAScore; //score for team A
     private int teamBScore; //score for team B
@@ -92,7 +89,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // Initialize the game  
-        LoadData();
+        StartUI();
         StartGame();
     }
 
@@ -107,6 +104,7 @@ public class GameManager : MonoBehaviour
     }
     
     
+    
     private IEnumerator GameCoroutine()
     {
         // Start game
@@ -114,12 +112,13 @@ public class GameManager : MonoBehaviour
         
         // Spawn obstacles
         obstacleSpawner.spawnObstacle();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         
         // Rounds
-        while (!(teamAScore >= targetScore || teamBScore >= targetScore))
+        while (true)
         {
             yield return RoundCoroutine();
+            if (teamAScore >= targetScore || teamBScore >= targetScore) { break; } // The game is finished !
         }
 
         // End of game
@@ -130,6 +129,8 @@ public class GameManager : MonoBehaviour
         UpdateWinnerUI();
         ShowEndGameUI();
     }
+    
+    
     
     private IEnumerator RoundCoroutine()
     {
@@ -145,7 +146,7 @@ public class GameManager : MonoBehaviour
         cochonnetScript = ballSpawner.spawnCochonnet();
         cochonnet = cochonnetScript.gameObject;
         yield return throwManager.BallThrowCoroutine(cochonnetScript);
-        yield return WaitForBallsToStop(new BoolReference());
+        yield return WaitForBallsToStop();
             
         Debug.Log("Cochonnet thrown, now it's time for the players to play!");
         
@@ -155,18 +156,17 @@ public class GameManager : MonoBehaviour
             
         // Players take turn
         roundPhase = RoundPhase.PlayerTurn;
-        bool teamAcanPlay = true;
-        bool teamBcanPlay = true;
-        while (teamAcanPlay || teamBcanPlay)
+        while (true)
         {
+            bool teamAcanPlay = teamABalls.Count < maxBallsPerTeam;
+            bool teamBcanPlay = teamBBalls.Count < maxBallsPerTeam;
+
+            if (!teamAcanPlay && !teamBcanPlay) break;
+            
             // Update current team
             currentTeam = (closest.Team == Team.TeamB && teamAcanPlay) || !teamBcanPlay ? Team.TeamA : Team.TeamB;
             UpdateCurrentTeamUI();
             yield return TurnCoroutine();
-            
-            // Update teamCanPlay
-            teamAcanPlay = teamABalls.Count < maxBallsPerTeam;
-            teamBcanPlay = teamBBalls.Count < maxBallsPerTeam;
         }
             
         // End of round
@@ -200,12 +200,12 @@ public class GameManager : MonoBehaviour
         Ball ballScript = ballSpawner.spawnBall(currentTeam);
         RegisterBall(ballScript);
         
-        Coroutine showDistanceCoroutine = StartCoroutine(UpdateDistanceUntilBallsStop(ballScript));
+        Coroutine showDistanceCoroutine = StartCoroutine(UpdateDistanceUIDynamicallyUntilBallsStop(ballScript));
         Coroutine throwBallCoroutine = StartCoroutine(throwManager.BallThrowCoroutine(ballScript));
         yield return throwBallCoroutine;
         yield return showDistanceCoroutine;
 
-        yield return WaitForBallsToStop(new BoolReference());
+        yield return WaitForBallsToStop();
         
         // Update scores
         ComputeTurnScores();
@@ -215,6 +215,11 @@ public class GameManager : MonoBehaviour
         UpdateLeadingTeamUI();
         UpdateBallCountUI();
     }
+    
+    
+    
+    
+    
     
     
     
@@ -234,12 +239,6 @@ public class GameManager : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
-    }
-    
-    public void OnBallDisqualified(Ball ball)
-    {
-        allBalls.Remove(ball);
-        Destroy(ball.gameObject);
     }
 
     // Setup logic
@@ -262,33 +261,31 @@ public class GameManager : MonoBehaviour
     }
     
     // Game logic
-    private IEnumerator WaitForBallsToStop(BoolReference isMoving)
+    private IEnumerator WaitForBallsToStop()
     {
-        do
+        aBallIsMoving = true;
+        
+        bool m = true;
+        while (m)
         {
-            isMoving.Value = false;
+            m = false;
             foreach (Ball ball in allBalls)
             {
-                if (ball.IsMoving() || !ball.HitGround || !ball.Launched)
-                {
-                    isMoving.Value = true;
-                }
+                if (ball.IsMoving()) { m = true; }
             }
-
-            if (cochonnetScript.IsMoving())
-            {
-                Debug.Log(cochonnet);
-                isMoving.Value = true;
-            }
-
-            yield return new WaitForSeconds(0.5f);
-        } 
-        while (isMoving.Value);
+            if (cochonnetScript.IsMoving()) { m = true; }
+            
+            yield return new WaitForSeconds(1f);
+        }
         
+        aBallIsMoving = false;
     }
-
-    private void ComputeClosest()
+    
+    private void ComputeTurnScores()
     {
+        if (cochonnet == null || allBalls.Count == 0) return;
+
+        // find the closest ball to the cochonnet (and which team it belongs to)
         closestDistance = Mathf.Infinity;
         closest = null;
         foreach (Ball b in allBalls)
@@ -300,13 +297,6 @@ public class GameManager : MonoBehaviour
                 closest = b;
             }
         }
-    }
-    
-    private void ComputeTurnScores()
-    {
-        if (cochonnet == null || allBalls.Count == 0) return;
-
-        ComputeClosest();
         
         Team winningTeam = closest.Team;
         List<Ball> winnerBalls = winningTeam == Team.TeamA ? teamABalls : teamBBalls;
@@ -337,13 +327,10 @@ public class GameManager : MonoBehaviour
     }
 
     // UI logic
-    private void LoadData()
+    private void StartUI()
     {
         teamAPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
-
-        teamAItemPanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
-        teamBItemPanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
 
         teamAScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorA;
         teamBScorePanel.GetComponent<Image>().color = MatchSettingsData.teamColorB;
@@ -357,12 +344,6 @@ public class GameManager : MonoBehaviour
 
         teamABallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorA);
         teamBBallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
-        
-        maxBallsPerTeam = MatchSettingsData.ballsPerTeam;
-        targetScore = MatchSettingsData.goalScore;
-        currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
-
-        selectedItems = new List<GameEffect>(MatchSettingsData.selectedItems);
     }
     private void UpdateBallCountUI()
     {
@@ -397,31 +378,26 @@ public class GameManager : MonoBehaviour
         winningTeamText.text = $"{TeamData.GetTeamName(winner)} wins!";
     }
 
-    private IEnumerator UpdateDistanceUntilBallsStop(Ball ball)
+    private IEnumerator UpdateDistanceUIDynamicallyUntilBallsStop(Ball ball)
     {
-        BoolReference aBallIsMoving = new ();
-        StartCoroutine(WaitForBallsToStop(aBallIsMoving));
-        while (aBallIsMoving.Value)
+        StartCoroutine(WaitForBallsToStop());
+        while (aBallIsMoving)
         {
             float dist = Vector3.Distance(ball.transform.position, cochonnet.transform.position);
-            ComputeClosest();
-            
             UpdateCurrentDistanceUI(dist);
-            UpdateBestDistanceUI();
-            
             yield return new WaitForSeconds(0.2f);
         }
     }
     
     
-    private void ShowGameUI()
+    private void ShowRegularUI()
     {
-        gameUI.SetActive(true);
+        regularUI.SetActive(true);
         endGameUI.SetActive(false);
     }
     private void ShowEndGameUI()
     {
-        gameUI.SetActive(false);
+        regularUI.SetActive(false);
         endGameUI.SetActive(true);
     }
     public void ChangeToMenu()
@@ -431,9 +407,9 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         // Reset UI
-        ShowGameUI();
+        ShowRegularUI();
         StartGame();
-    } 
+    }
     public Color GetTextColorForBackground(Color bgColor)
     {
         float luminance = 0.2126f * bgColor.r + 0.7152f * bgColor.g + 0.0722f * bgColor.b; // luminance using  formula for brightness
@@ -442,4 +418,3 @@ public class GameManager : MonoBehaviour
 
 
 }
-

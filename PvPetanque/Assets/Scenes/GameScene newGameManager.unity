@@ -1340,7 +1340,6 @@ GameObject:
   - component: {fileID: 320866324}
   - component: {fileID: 320866325}
   - component: {fileID: 320866327}
-  - component: {fileID: 320866326}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1379,10 +1378,12 @@ MonoBehaviour:
   teamBPanel: {fileID: 1092823885}
   teamAScorePanel: {fileID: 1557804115}
   teamBScorePanel: {fileID: 251145714}
+  endGameUI: {fileID: 429623868}
+  gameUI: {fileID: 0}
+  teamAItemPanel: {fileID: 0}
+  teamBItemPanel: {fileID: 0}
   teamANameText: {fileID: 8932630}
   teamBNameText: {fileID: 555007077}
-  endGameUI: {fileID: 429623868}
-  regularUI: {fileID: 384061838}
   winningTeamText: {fileID: 272270159}
   teamABallsText: {fileID: 1487502353}
   teamBBallsText: {fileID: 357103463}
@@ -1391,70 +1392,16 @@ MonoBehaviour:
   currentPlayerText: {fileID: 1531114252}
   currentDistanceText: {fileID: 343406719}
   bestDistanceText: {fileID: 759586190}
-  throwManager: {fileID: 320866327}
-  ballSpawner: {fileID: 1911794686}
-  obstacleSpawner: {fileID: 754879788}
   maxBallsPerTeam: 6
   targetScore: 13
+  selectedItems: []
+  throwManager: {fileID: 320866327}
+  ballSpawner: {fileID: 1835347401}
+  obstacleSpawner: {fileID: 1188190917}
   teamABalls: []
   teamBBalls: []
   roundPhase: 0
   currentTeam: 0
---- !u!114 &320866326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 320866323}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 026b3c1ea99b43146b5d99e1be9b6762, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BallThrowIsRunning: 0
-  StartingPosition: {x: 0, y: 0, z: 0}
-  CurrentBall: {fileID: 0}
-  CurrentBallRb: {fileID: 0}
-  CurrentBallScript: {fileID: 0}
-  _indicatorsPrefab: {fileID: 5738989286035675874, guid: 501723bb8af57f544a167c4455701947, type: 3}
-  _aimingIndicator: {fileID: 0}
-  _calibratingIndicator: {fileID: 0}
-  _releasingIndicator: {fileID: 0}
-  cameraManager: {fileID: 0}
-  baseFOV: 0
-  aimingCameraPosition: {x: 0, y: 1, z: -0.5}
-  aimingCameraRotation: {x: 0.57357645, y: 0, z: 0, w: 0.81915206}
-  _aimAngle: 0
-  minAimAngle: -30
-  maxAimAngle: 30
-  aimSpeed: 60
-  calibratingCameraStartingPosition: {x: -1, y: 1, z: -0.5}
-  calibratingCameraStartingRotation: {x: 0.3314136, y: 0.46193975, z: -0.19134173, w: 0.8001031}
-  calibratingCameraStartingFOV: 60
-  calibratingCameraMaxStrengthPosition: {x: 0, y: 1.5, z: -2}
-  calibratingCameraMaxStrengthRotation: {x: 0.25881904, y: 0, z: 0, w: 0.9659258}
-  calibratingCameraMaxStrengthFOV: 20
-  calibratingCameraFinalPosition: {x: 0, y: 1, z: -0.5}
-  calibratingCameraFinalRotation: {x: 0.38268346, y: 0, z: 0, w: 0.9238795}
-  calibratingCameraFinalFOV: 60
-  _initialVelocity: 0
-  maxCalibratingDuration: 1
-  durationToVelocityExponent: 5
-  velocityAtMin: 20
-  velocityAtMax: 300
-  lengthAtMaxStrength: 3
-  springConstant: 60
-  releasingCameraPosition: {x: 0, y: 1, z: -0.5}
-  releasingCameraRotation: {x: 0.38268346, y: 0, z: 0, w: 0.9238795}
-  _releaseAngle: 0
-  startingReleaseAngle: -60
-  swingSpeed: 15
-  maxReleaseAngle: 80
-  distanceToAnchor: 6
-  flightCameraPosition: {x: 0, y: 2, z: -2}
-  flightCameraRotation: {x: 0, y: 0, z: 0, w: 1}
-  ballFollowingFovExponent: 0.75
 --- !u!114 &320866327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1836,7 +1783,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 1520949449}
+    TrackingTarget: {fileID: 0}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -2938,17 +2885,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!114 &754879788 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8176483627532755142, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
-  m_PrefabInstance: {fileID: 386366106}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6250d742afda7ab4c80f27821ed5fa3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &759586188
 GameObject:
   m_ObjectHideFlags: 0
@@ -3945,6 +3881,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1092823885}
   m_CullTransparentMesh: 1
+--- !u!114 &1188190917 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4709223566340199254, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
+  m_PrefabInstance: {fileID: 386366106}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6250d742afda7ab4c80f27821ed5fa3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1188273801
 GameObject:
   m_ObjectHideFlags: 0
@@ -4233,79 +4180,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253276029}
   m_CullTransparentMesh: 1
---- !u!1 &1363695452
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1363695453}
-  - component: {fileID: 1363695455}
-  - component: {fileID: 1363695454}
-  m_Layer: 5
-  m_Name: RawFire (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &1363695453
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1363695452}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1092823886}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 186, y: 24}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1363695454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1363695452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Texture: {fileID: 2800000, guid: a396aa218bc23fe49ad6e6e1020ee0bc, type: 3}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!222 &1363695455
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1363695452}
-  m_CullTransparentMesh: 1
---- !u!43 &1407618327
+--- !u!43 &1317238712
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4470,6 +4345,78 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1363695452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1363695453}
+  - component: {fileID: 1363695455}
+  - component: {fileID: 1363695454}
+  m_Layer: 5
+  m_Name: RawFire (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1363695453
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363695452}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1092823886}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 186, y: 24}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1363695454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363695452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: a396aa218bc23fe49ad6e6e1020ee0bc, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &1363695455
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363695452}
+  m_CullTransparentMesh: 1
 --- !u!1 &1451224242
 GameObject:
   m_ObjectHideFlags: 0
@@ -4863,7 +4810,7 @@ MonoBehaviour:
   m_LegacyPriority: 0
   Target:
     TrackingTarget: {fileID: 0}
-    LookAtTarget: {fileID: 1520949449}
+    LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 1
   Lens:
     FieldOfView: 60
@@ -4944,11 +4891,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.03, y: 0, z: 0}
---- !u!4 &1520949449 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6362052276356385250, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
-  m_PrefabInstance: {fileID: 386366106}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1531114250
 GameObject:
   m_ObjectHideFlags: 0
@@ -5531,7 +5473,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 1520949449}
+    TrackingTarget: {fileID: 0}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -6105,9 +6047,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1819378888}
   m_CullTransparentMesh: 1
---- !u!114 &1911794686 stripped
+--- !u!114 &1835347401 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8917839329481941607, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2735287057198867828, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
   m_PrefabInstance: {fileID: 386366106}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

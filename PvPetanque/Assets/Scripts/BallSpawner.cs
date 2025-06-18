@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BallSpawner : MonoBehaviour
@@ -56,8 +57,8 @@ public class BallSpawner : MonoBehaviour
         // Set team before assigning material
         ballScript.Team = currentTeam;
 
-        Renderer renderer; // = ball.GetComponent<Renderer>();
-        if (ball.TryGetComponent<Renderer>(out renderer))
+        Renderer renderer;
+        if (ball.TryGetComponent(out renderer))
         {
             Material teamMaterial = new Material(ballMaterial);
             teamMaterial.color = ballScript.Team == Team.TeamA
@@ -65,6 +66,20 @@ public class BallSpawner : MonoBehaviour
                 : MatchSettingsData.teamColorB;
             renderer.material = teamMaterial;
         }
+        
+        // Bound the effect to the ball
+        switch (currentTeam)
+        {
+            case Team.TeamA:
+                teamASlot.SetTeamObject(ball);
+                break;
+            case Team.TeamB:
+                teamBSlot.SetTeamObject(ball);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(currentTeam), currentTeam, null);
+        }
+        
         return ballScript;
     }
     

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   calibratingIndicatorGameObject: {fileID: 6165757761108554926}
+  spring: {fileID: 6113468265260246543}
   tip: {fileID: 1612472215144179094}
 --- !u!1 &1612472215144179094
 GameObject:

@@ -47,6 +47,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int TargetScore = 13;
     [SerializeField] private List<GameEffect> selectedItems;
 
+    // in case of item bonus ball
+    private int maxBallsTeamA;
+    private int maxBallsTeamB;
+
 
     [Header("Game Logic")]
     [SerializeField] private BallSpawner ballSpawner;
@@ -104,6 +108,8 @@ public class GameManager : MonoBehaviour
         teamBBallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
 
         maxBallsPerTeam = MatchSettingsData.ballsPerTeam;
+        maxBallsTeamA = maxBallsPerTeam;
+        maxBallsTeamB = maxBallsPerTeam;
         teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
         teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
 
@@ -135,8 +141,8 @@ public class GameManager : MonoBehaviour
         cochonnet = null; // reset the cochonnet reference
 
         // Reset UI
-        teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
-        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
+        teamABallsText.text = $"{teamABalls.Count}|{maxBallsTeamA}";
+        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsTeamB}";
         winningTeamText.text = "None";
 
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
@@ -162,12 +168,12 @@ public class GameManager : MonoBehaviour
         if (ball.team == Team.TeamA)
         {
             teamABalls.Add(ball);
-            teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam}";
+            teamABallsText.text = $"{teamABalls.Count}|{maxBallsTeamA}";
         }
         else if (ball.team == Team.TeamB)
         {
             teamBBalls.Add(ball);
-            teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam}";
+            teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsTeamB}";
         }
     }
 
@@ -248,8 +254,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        bool teamAcanPlay = teamABalls.Count < maxBallsPerTeam;
-        bool teamBcanPlay = teamBBalls.Count < maxBallsPerTeam;
+        bool teamAcanPlay = teamABalls.Count < maxBallsTeamA;
+        bool teamBcanPlay = teamBBalls.Count < maxBallsTeamB;
 
         if (!teamAcanPlay && !teamBcanPlay)
         {
@@ -397,6 +403,28 @@ public class GameManager : MonoBehaviour
         allBalls.Remove(ball);
         Destroy(ball.gameObject);
     }
+
+        public void IncreaseMaxBalls(Team team)
+    {
+        if (team == Team.TeamA)
+        {
+            maxBallsTeamA++;
+            teamABallsText.text = $"{teamABalls.Count}|{maxBallsTeamA}";
+        }
+        else if (team == Team.TeamB)
+        {
+            maxBallsTeamB++;
+            teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsTeamB}";
+        }
+
+        Debug.Log($"Max balls increased for {team}: now {GetMaxBalls(team)} balls.");
+    }
+
+    public int GetMaxBalls(Team team)
+    {
+        return team == Team.TeamA ? maxBallsTeamA : maxBallsTeamB;
+    }
+
 
 
     private bool mainCameraActive = true; // oui je sais c'est barbare de mettre ça ici, mais c'est pour que tu organises comme tu veux !

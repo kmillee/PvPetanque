@@ -12,18 +12,16 @@ public class RepulseEffect : GameEffect
 
     public void ApplyRepulsion(GameObject target)
     {
+        
         // Apply a repulse force to all balls in radius around the target
         Collider[] hitColliders = Physics.OverlapSphere(target.transform.position, repulseRadius);
         
         foreach (var collider in hitColliders) {
             Ball ball = collider.GetComponent<Ball>();
             Rigidbody rb = collider.GetComponent<Rigidbody>();
-            if (ball == null || rb == null || collider.transform.root.gameObject == target.transform.root.gameObject) {
-                continue; // Skip if no Rigidbody or if it's the target itself
+            if (ball == null || rb == null || ball.gameObject == target || ball is Cochonnet) {
+                continue; // Skip if no Rigidbody, if it's the target itself or if it's the Cochonnet
             }
-
-            // Debug print colliders
-            Debug.Log($"Repulsing {collider.name} from {target.name}");
 
             Vector3 direction = rb.transform.position - target.transform.position;
             float distance = direction.magnitude;

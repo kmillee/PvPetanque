@@ -89,6 +89,7 @@ public class ThrowManager_PoolStyle : ThrowManager
         yield return FlightStage();
     }
 
+
     private IEnumerator AimingStage()
     {
         mouseLookAbsolute = Vector2.zero;
@@ -112,8 +113,13 @@ public class ThrowManager_PoolStyle : ThrowManager
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
 
-                do { yield return null; } while (!Input.GetKeyDown("space"));
+                do
+                {
+                    aimingCamera.Priority = useGlobalCamera ? 0 : 10;
+                    yield return null;
+                } while (!Input.GetKeyDown("space"));
 
+                aimingCamera.Priority = 10;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }

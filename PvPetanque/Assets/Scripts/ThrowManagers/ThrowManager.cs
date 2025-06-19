@@ -10,6 +10,8 @@ public abstract class ThrowManager : MonoBehaviour
     protected Rigidbody CurrentBallRb;
     protected Ball CurrentBallScript;
 
+    protected bool useGlobalCamera;
+
     public IEnumerator BallThrowCoroutine(Ball ballScript)
     {
         if (BallThrowIsRunning)
@@ -45,4 +47,9 @@ public abstract class ThrowManager : MonoBehaviour
     protected abstract void SetUpThrow();
     protected abstract void CleanUpThrow();
     protected abstract IEnumerator BallThrowSequence();
+
+    public void onGlobalCameraButtonClick()
+    {
+        useGlobalCamera = !useGlobalCamera;
+    }
 }

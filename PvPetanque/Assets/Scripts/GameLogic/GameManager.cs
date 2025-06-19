@@ -277,7 +277,6 @@ public class GameManager : MonoBehaviour
 
             if (cochonnetScript.IsMoving())
             {
-                Debug.Log(cochonnet);
                 isMoving.Value = true;
             }
 

@@ -26,14 +26,14 @@ public class Ball : MonoBehaviour
         }
 
         if(!isMoving && rb.linearVelocity.magnitude >= 0.0005f) {
-            Debug.Log($"Ball {gameObject.name} has started moving.");
+            // Debug.Log($"Ball {gameObject.name} has started moving.");
             isMoving = true; 
             timer = 0f; // Reset timer when the ball starts moving
         }
 
         if(isMoving) {
             timer += Time.deltaTime;
-            Debug.Log($"Ball {gameObject.name} is moving. Timer: {timer:F2}s");
+            // Debug.Log($"Ball {gameObject.name} is moving. Timer: {timer:F2}s");
             if(rb.linearVelocity.magnitude < 0.0005f && timer > 0.1f) {
                 isMoving = false;
                 timer = 0f; // Reset timer when the ball stops moving

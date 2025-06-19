@@ -217,26 +217,18 @@ public class ThrowManager_PoolStyle : ThrowManager
         float flightStart = Time.time;
         while (!CurrentBallScript.HitGround)
         {
-            // Make sure the ball stay in bounds
-            int boundsTest = 0;
-            while (!CurrentBallScript.InBounds)
-            {
-                boundsTest++;
-                if (boundsTest >= 5)
-                {
-                    Debug.Log("out of bounds");
-                    CurrentBallScript.Disqualify();
-                    yield break;
-                }
-                
-                yield return new WaitForSeconds(0.25f);
-            }
-
             if (Time.time - flightStart >= maxTimer)
             {
                 Debug.Log("out of time");
                 CurrentBallScript.Disqualify();
-                yield break;
+                yield return new WaitForSeconds(0.5f);
+                break;
+            }
+
+            if (CurrentBallScript.IsDisqualified)
+            {
+                yield return new WaitForSeconds(0.5f);
+                break;
             }
             
             yield return null;

@@ -48,17 +48,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentPlayerText;
     public TextMeshProUGUI currentDistanceText;
     [SerializeField] private TextMeshProUGUI bestDistanceText;
-    
+
     [Header("Game Settings")]
     [SerializeField] private int maxBallsPerTeam = 6;
     [SerializeField] private int targetScore = 13;
     [SerializeField] private List<GameEffect> selectedItems;
-    
+
     [Header("Game Logic")]
-    [SerializeField] private ThrowManager throwManager; 
+    [SerializeField] private ThrowManager throwManager;
     [SerializeField] private BallSpawner ballSpawner;
     [SerializeField] private ObstacleSpawner obstacleSpawner;
-    
+
     [Header("Game State")]
     public List<Ball> teamABalls = new List<Ball>(); //how many balls are on team A
     public List<Ball> teamBBalls = new List<Ball>(); //how many balls are on team B
@@ -70,16 +70,20 @@ public class GameManager : MonoBehaviour
     private Cochonnet cochonnetScript;
     private Ball closest; //closest ball to the cochonnet
     private float closestDistance;
-    
+
     private int teamAScore; //score for team A
     private int teamBScore; //score for team B
     private int pointsThisRound; //points for this round
-    
+
+    // in case of item bonus ball
+    private int maxBallsTeamA;
+    private int maxBallsTeamB;
+
     public RoundPhase roundPhase;
     public Team currentTeam;
 
-    
-    
+
+
     public void Awake()
     {
         if (instance == null)
@@ -105,21 +109,21 @@ public class GameManager : MonoBehaviour
         // Initialize variables
         targetScore = MatchSettingsData.goalScore;
         currentTeam = MatchSettingsData.firstTeam;
-        
+
         // Start a round
         StartCoroutine(GameCoroutine());
     }
-    
-    
+
+
     private IEnumerator GameCoroutine()
     {
         // Start game
         InitializeScore();
-        
+
         // Spawn obstacles
         obstacleSpawner.spawnObstacle();
         yield return new WaitForSeconds(1f);
-        
+
         // Rounds
         while (!(teamAScore >= targetScore || teamBScore >= targetScore))
         {
@@ -128,17 +132,17 @@ public class GameManager : MonoBehaviour
 
         // End of game
         Debug.Log("End of the game!");
-        
+
         roundPhase = RoundPhase.EndGame;
         currentPlayerText.text = "Game Over!";
         UpdateWinnerUI();
         ShowEndGameUI();
     }
-    
+
     private IEnumerator RoundCoroutine()
     {
         ClearBalls();
-        
+
         UpdateTeamScoreUI();
         UpdateBallCountUI();
         UpdateCurrentTeamUI();
@@ -156,11 +160,11 @@ public class GameManager : MonoBehaviour
         while (cochonnetScript.IsDisqualified);
 
         Debug.Log("Cochonnet thrown, now it's time for the players to play!");
-        
+
         // First turn 
         UpdateCurrentTeamUI();
         yield return TurnCoroutine();
-            
+
         // Players take turn
         roundPhase = RoundPhase.PlayerTurn;
         bool teamAcanPlay = true;
@@ -171,19 +175,19 @@ public class GameManager : MonoBehaviour
             currentTeam = (closest.Team == Team.TeamB && teamAcanPlay) || !teamBcanPlay ? Team.TeamA : Team.TeamB;
             UpdateCurrentTeamUI();
             yield return TurnCoroutine();
-            
+
             // Update teamCanPlay
-            teamAcanPlay = teamABalls.Count + disqualifiedTeamABalls.Count < maxBallsPerTeam;
-            teamBcanPlay = teamBBalls.Count + disqualifiedTeamBBalls.Count < maxBallsPerTeam;
+            teamAcanPlay = teamABalls.Count + disqualifiedTeamABalls.Count < maxBallsTeamA;
+            teamBcanPlay = teamBBalls.Count + disqualifiedTeamBBalls.Count < maxBallsTeamB;
         }
-            
+
         // End of round
         Debug.Log("No more balls left for both teams!");
         Debug.Log($"{closest.Team} has won this round!");
-        
+
         roundPhase = RoundPhase.EndRound;
-        currentPlayerText.text = "Round Ended!";   
-        
+        currentPlayerText.text = "Round Ended!";
+
         switch (closest.Team)
         {
             case Team.TeamA:
@@ -192,7 +196,7 @@ public class GameManager : MonoBehaviour
                 break;
             case Team.TeamB:
                 teamBScore = Mathf.Min(teamBScore + pointsThisRound, targetScore);
-                teamBScoreText.text = $"{teamBScore}";                    
+                teamBScoreText.text = $"{teamBScore}";
                 break;
             default:
                 Debug.Log("Closest ball has no team ???");
@@ -203,38 +207,38 @@ public class GameManager : MonoBehaviour
     private IEnumerator TurnCoroutine()
     {
         Debug.Log("Next!");
-        
+
         // Throw a new ball
         Ball ballScript = ballSpawner.spawnBall(currentTeam);
         RegisterBall(ballScript);
-        
+
         Coroutine showDistanceCoroutine = StartCoroutine(UpdateDistanceUntilBallsStop(ballScript));
         Coroutine throwBallCoroutine = StartCoroutine(throwManager.BallThrowCoroutine(ballScript));
         yield return throwBallCoroutine;
         yield return showDistanceCoroutine;
 
         yield return WaitForBallsToStop(new BoolReference());
-        
+
         // Update scores
         ComputeTurnScores();
-        
+
         // Update UI
         UpdateBestDistanceUI();
         UpdateLeadingTeamUI();
         UpdateBallCountUI();
     }
-    
-    
-    
+
+
+
     // Ball Logic
     private void RegisterBall(Ball ball)
     {
         allBalls.Add(ball);
-        
+
         switch (ball.Team)
         {
             case Team.TeamA:
-                teamABalls.Add(ball); 
+                teamABalls.Add(ball);
                 break;
             case Team.TeamB:
                 teamBBalls.Add(ball);
@@ -243,7 +247,7 @@ public class GameManager : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
     }
-    
+
     public void OnBallDisqualified(Ball ball)
     {
         switch (ball.Team)
@@ -292,15 +296,15 @@ public class GameManager : MonoBehaviour
         disqualifiedTeamABalls.Clear();
         disqualifiedTeamBBalls.Clear();
         disqualifiedBalls.Clear();
-        
-        if(cochonnet) { Destroy(cochonnet.gameObject); } // destroy the cochonnet
+
+        if (cochonnet) { Destroy(cochonnet.gameObject); } // destroy the cochonnet
         cochonnet = null; // reset the cochonnet reference
     }
-    
+
     // Game logic
     private IEnumerator WaitForBallsToStop(BoolReference isMoving)
     {
-        while(isMoving.Value)
+        while (isMoving.Value)
         {
             isMoving.Value = false;
             foreach (Ball ball in allBalls)
@@ -322,7 +326,7 @@ public class GameManager : MonoBehaviour
             }
 
             yield return new WaitForSeconds(0.1f);
-        } 
+        }
     }
 
     private void ComputeClosest()
@@ -339,17 +343,17 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     private void ComputeTurnScores()
     {
         if (cochonnet == null || allBalls.Count == 0) return;
 
         ComputeClosest();
-        
+
         Team winningTeam = closest.Team;
         List<Ball> winnerBalls = winningTeam == Team.TeamA ? teamABalls : teamBBalls;
         List<Ball> loserBalls = winningTeam == Team.TeamA ? teamBBalls : teamABalls;
-        
+
         // Find the closest loser ball distance to the cochonnet
         float opponentClosestDist = Mathf.Infinity;
         foreach (Ball b in loserBalls)
@@ -395,8 +399,10 @@ public class GameManager : MonoBehaviour
 
         teamABallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorA);
         teamBBallsText.color = GetTextColorForBackground(MatchSettingsData.teamColorB);
-        
+
         maxBallsPerTeam = MatchSettingsData.ballsPerTeam;
+        maxBallsTeamA = maxBallsPerTeam;
+        maxBallsTeamB = maxBallsPerTeam;
         targetScore = MatchSettingsData.goalScore;
         currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
 
@@ -404,17 +410,17 @@ public class GameManager : MonoBehaviour
     }
     private void UpdateBallCountUI()
     {
-        teamABallsText.text = $"{teamABalls.Count}|{maxBallsPerTeam - disqualifiedTeamABalls.Count}";
-        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsPerTeam - disqualifiedTeamBBalls.Count}";        
+        teamABallsText.text = $"{teamABalls.Count}|{maxBallsTeamA - disqualifiedTeamABalls.Count}";
+        teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsTeamB - disqualifiedTeamBBalls.Count}";
     }
     private void UpdateTeamScoreUI()
     {
         teamAScoreText.text = $"{teamAScore}";
-        teamBScoreText.text = $"{teamBScore}";        
+        teamBScoreText.text = $"{teamBScore}";
     }
     private void UpdateCurrentTeamUI()
     {
-        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";        
+        currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
     }
 
     private void UpdateBestDistanceUI()
@@ -455,7 +461,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator UpdateDistanceUntilBallsStop(Ball ball)
     {
-        BoolReference aBallIsMoving = new ();
+        BoolReference aBallIsMoving = new();
         StartCoroutine(WaitForBallsToStop(aBallIsMoving));
         while (aBallIsMoving.Value)
         {
@@ -463,15 +469,15 @@ public class GameManager : MonoBehaviour
                 ? float.PositiveInfinity
                 : Vector3.Distance(ball.transform.position, cochonnet.transform.position);
             ComputeClosest();
-            
+
             UpdateCurrentDistanceUI(dist);
             UpdateBestDistanceUI();
-            
+
             yield return new WaitForSeconds(0.2f);
         }
     }
-    
-    
+
+
     private void ShowGameUI()
     {
         gameUI.SetActive(true);
@@ -491,11 +497,58 @@ public class GameManager : MonoBehaviour
         // Reset UI
         ShowGameUI();
         StartGame();
-    } 
+    }
     public Color GetTextColorForBackground(Color bgColor)
     {
         float luminance = 0.2126f * bgColor.r + 0.7152f * bgColor.g + 0.0722f * bgColor.b; // luminance using  formula for brightness
         return luminance > 0.5f ? Color.black : Color.white;
+    }
+
+    // item logic
+    public void IncreaseMaxBalls(Team team)
+    {
+        if (team == Team.TeamA)
+        {
+            maxBallsTeamA++;
+            teamABallsText.text = $"{teamABalls.Count}|{maxBallsTeamA}";
+        }
+        else if (team == Team.TeamB)
+        {
+            maxBallsTeamB++;
+            teamBBallsText.text = $"{teamBBalls.Count}|{maxBallsTeamB}";
+        }
+
+        Debug.Log($"Max balls increased for {team}: now {GetMaxBalls(team)} balls.");
+    }
+
+    public int GetMaxBalls(Team team)
+    {
+        return team == Team.TeamA ? maxBallsTeamA : maxBallsTeamB;
+    }
+
+     private bool mainCameraActive = true; // oui je sais c'est barbare de mettre ça ici, mais c'est pour que tu organises comme tu veux !
+    [SerializeField] private GameObject regularUI;
+
+    public void OnCameraButtonClicked()
+    {
+        Debug.Log("Camera button clicked!");
+
+        if (mainCameraActive)
+        {
+            // Switch to the second camera
+
+            // j'avais la flemme de m'arranger pour que buttonCamera soit sur un autre canvas, donc on désactive tout le reste
+            regularUI.SetActive(false);
+            mainCameraActive = false;
+
+        }
+        else
+        {
+            // Switch back to the main camera
+            regularUI.SetActive(true);
+            mainCameraActive = true;
+            
+        }
     }
 
 

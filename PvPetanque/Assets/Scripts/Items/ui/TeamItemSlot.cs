@@ -42,9 +42,10 @@ public class TeamItemSlot : MonoBehaviour
         Debug.Log("Button clicked");
         if (currentItem != null)
         {
+            Debug.Log($"Using item: {currentItem.effectName} on team object: {teamObject.name}");
             currentItem.Apply(teamObject);
             currentItem = null;
-            RefreshUI();
+            ClearItem(); // Clear the item after use
         }
     }
 
@@ -73,8 +74,7 @@ public class TeamItemSlot : MonoBehaviour
             }
         }
 
-        if (buttonHighlight != null)
-            buttonHighlight.SetActive(currentItem != null);
+
     }
 
     public void SetTeamObject(GameObject obj) 

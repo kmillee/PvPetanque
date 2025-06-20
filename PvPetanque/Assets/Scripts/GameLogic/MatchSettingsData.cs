@@ -10,8 +10,13 @@ public static class MatchSettingsData
     public static int goalScore = 13;
     public static int ballsPerTeam = 6;
 
-    // These items are available to pick from
+    // These items are available to pick from, default  items are loaded from Resources/GameEffects
     public static List<GameEffect> availableItems = new List<GameEffect>();
+
+
+    // Initialize available items list
+    // Add default items to the available items list
+
 
     // // These are the selected items (used in the match)
     public static HashSet<GameEffect> selectedItems = new HashSet<GameEffect>();
@@ -37,13 +42,23 @@ public static class MatchSettingsData
         teamColorB = Color.blue;
         firstTeam = Team.TeamA;
 
-        for (int i = 0; i < availableItems.Count; i++)
-        {
-            
-            selectedItems.Add(availableItems[i]);
-            
-        }
+        InitializeAvailableItems();
+        InitializeSelectedItems();
 
-        // selectedItems.Clear(); // clear selection
+    }
+
+    public static void InitializeAvailableItems()
+    {
+        availableItems.Clear();
+        availableItems.AddRange(Resources.LoadAll<GameEffect>("Scripts/Items")); // Load all GameEffect assets from Resources/GameEffects
+    }
+    
+    public static void InitializeSelectedItems()
+    {
+        selectedItems.Clear();
+        foreach (GameEffect item in availableItems)
+        {
+            selectedItems.Add(item); // Add all available items to selected items
+        }
     }
 }

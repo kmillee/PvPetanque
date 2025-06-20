@@ -9449,11 +9449,7 @@ PrefabInstance:
     - target: {fileID: 3362284410488555632, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
       propertyPath: m_Mesh
       value: 
-<<<<<<< HEAD
-      objectReference: {fileID: 1290973691}
-=======
       objectReference: {fileID: 1932378626}
->>>>>>> UI
     - target: {fileID: 3855683483721168058, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
       propertyPath: m_Name
       value: Boulodrome
@@ -9461,11 +9457,7 @@ PrefabInstance:
     - target: {fileID: 4230877043964172420, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
       propertyPath: m_Mesh
       value: 
-<<<<<<< HEAD
-      objectReference: {fileID: 1290973691}
-=======
       objectReference: {fileID: 1932378626}
->>>>>>> UI
     - target: {fileID: 8411221427362833168, guid: f9b7b21b08d68f7419894c9056d5cc9a, type: 3}
       propertyPath: Loop
       value: 1

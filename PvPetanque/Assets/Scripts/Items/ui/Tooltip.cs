@@ -6,6 +6,7 @@ public class Tooltip : MonoBehaviour
     public static Tooltip Instance;
 
     [SerializeField] private GameObject panel;
+    [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text tooltipText;
 
     private void Awake()
@@ -23,10 +24,12 @@ public class Tooltip : MonoBehaviour
         }
     }
 
-    public void ShowTooltip(string description)
+    public void ShowTooltip(string title, string description)
     {
         panel.SetActive(true);
+        titleText.text = title; // You can set a specific title if needed
         tooltipText.text = description;
+
         // tooltipText.text =
     }
 

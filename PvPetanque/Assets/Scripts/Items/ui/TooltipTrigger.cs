@@ -13,7 +13,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (currentItem != null)
         {
-            tooltip.ShowTooltip(currentItem.effectName,currentItem.description);
+            tooltip.ShowTooltip(currentItem.description);
         }
     }
 

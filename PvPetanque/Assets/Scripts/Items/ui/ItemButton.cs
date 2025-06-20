@@ -26,7 +26,7 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        tooltip.ShowTooltip(item.effectName, item.description);
+        tooltip.ShowTooltip(item.description);
         // Debug.Log("ItemButton: OnPointerEnter called");
     }
     public void OnPointerExit(PointerEventData eventData)

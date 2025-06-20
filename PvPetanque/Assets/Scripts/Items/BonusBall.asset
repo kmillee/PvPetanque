@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c9f0813e9e97ea42838d91552c02040, type: 3}
+  m_Script: {fileID: 11500000, guid: 67c2ed0f66b875a4780d0f115d54afdc, type: 3}
   m_Name: BonusBall
   m_EditorClassIdentifier: 
   effectName: Bonus Ball

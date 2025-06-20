@@ -404,7 +404,7 @@ public class GameManager : MonoBehaviour
         Destroy(ball.gameObject);
     }
 
-        public void IncreaseMaxBalls(Team team)
+    public void IncreaseMaxBalls(Team team)
     {
         if (team == Team.TeamA)
         {

@@ -15,5 +15,5 @@ MonoBehaviour:
   effectName: Swap Effect
   description: swap two balls from opposite teams within a radius
   icon: {fileID: 0}
-  duration: 0
-  swapRadius: 0.5
+  duration: 1
+  swapRadius: 1

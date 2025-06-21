@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ed8f6346cdb624419d2880e52c7ba75, type: 3}
   m_Name: Shock Wave
   m_EditorClassIdentifier: 
-  effectName: 
-  description: 
+  effectName: ShockWave
+  description: When a ball hits the ground, it creates a shock wave affecting every
+    object around it
   icon: {fileID: 0}
-  duration: 0
+  duration: 1
   shockwaveRadius: 5
-  shockwaveForce: 10
+  shockwaveForce: 2

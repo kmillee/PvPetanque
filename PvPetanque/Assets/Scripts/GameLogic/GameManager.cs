@@ -27,6 +27,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
+    [Header("Item Slots")]
+    [SerializeField] private TeamItemSlot teamASlot;
+    [SerializeField] private TeamItemSlot teamBSlot;
+
     [Header("UI - Panels")]
     [SerializeField] private GameObject teamAPanel;
     [SerializeField] private GameObject teamBPanel;
@@ -83,7 +87,14 @@ public class GameManager : MonoBehaviour
     public Team currentTeam;
 
 
-
+    public TeamItemSlot GetTeamItemSlotA()
+    {
+        return teamASlot;
+    }
+    public TeamItemSlot GetTeamItemSlotB()
+    {
+        return teamBSlot;
+    }
     public void Awake()
     {
         if (instance == null)
@@ -142,6 +153,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator RoundCoroutine()
     {
         ClearBalls();
+        RepulseEffectManager.Instance.ClearRepulsors();
+        AttractEffectManager.Instance.ClearAttractors();
 
         UpdateTeamScoreUI();
         UpdateBallCountUI();

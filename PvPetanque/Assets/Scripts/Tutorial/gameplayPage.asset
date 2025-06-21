@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
-  m_Name: pinguPage
+  m_Name: gameplayPage
   m_EditorClassIdentifier: 
-  category: 0
-  pageTitle: noot noot
-  pageText: "1st rule: don't talk about the p\xE9tanque."
-  pageImage: {fileID: 21300000, guid: c46b7ac119568a5429e5694afdb65fb5, type: 3}
-  pageVideo: {fileID: 32900000, guid: 571757bc2e851124c893d965ca2321ab, type: 3}
+  category: 1
+  pageTitle: How to play?
+  pageText: You click and you stop to click.
+  pageImage: {fileID: 0}
+  pageVideo: {fileID: 0}

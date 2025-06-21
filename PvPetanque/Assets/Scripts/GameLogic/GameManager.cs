@@ -161,6 +161,14 @@ public class GameManager : MonoBehaviour
         UpdateCurrentTeamUI();
         winningTeamText.text = "None";
 
+        // Spawn item boxes
+        ItemBoxSpawner itemBoxSpawner = FindObjectOfType<ItemBoxSpawner>();
+        if (itemBoxSpawner != null)
+        {
+            itemBoxSpawner.SpawnitemBox();
+        }
+
+
         // Cochonnet time !
         do
         {

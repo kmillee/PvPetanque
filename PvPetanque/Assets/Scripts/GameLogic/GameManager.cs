@@ -227,6 +227,12 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator TurnCoroutine()
     {
+        // Adjust item slots UI
+        foreach (var slot in FindObjectsOfType<TeamItemSlot>())
+        {
+            slot.RefreshUI(); 
+        }
+
         Debug.Log("Next!");
         // Try to spawn a new item box
         if (itemBoxSpawner != null)

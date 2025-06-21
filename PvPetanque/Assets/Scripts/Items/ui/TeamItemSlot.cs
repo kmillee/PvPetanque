@@ -6,7 +6,7 @@ public class TeamItemSlot : MonoBehaviour
     [Header("UI")]
     public Button useItemButton;
     public Image itemIcon; // Optional: for showing an icon
-    public GameObject buttonHighlight; // Optional: highlight if it's the team's turn
+    public GameObject greyPanel; // UI panel that blocks interaction when not allowed
 
     [Header("Logic")]
     public TooltipTrigger tooltipTrigger; // Reference to the tooltip trigger component
@@ -44,6 +44,7 @@ public class TeamItemSlot : MonoBehaviour
         {
             Debug.Log($"Using item: {currentItem.effectName} on team object: {teamObject.name}");
             currentItem.Apply(teamObject);
+
             currentItem = null;
             ClearItem(); // Clear the item after use
         }
@@ -56,29 +57,40 @@ public class TeamItemSlot : MonoBehaviour
         RefreshUI();
     }
 
-    private void RefreshUI()
+    public void RefreshUI()
     {
-        useItemButton.interactable = currentItem != null;
+        bool hasItem = currentItem != null;
 
         if (itemIcon != null)
         {
-            if (currentItem != null)
-            {
-                itemIcon.enabled = true;
-                itemIcon.sprite = currentItem.icon; 
-            }
-            else
-            {
-                itemIcon.enabled = false;
-                itemIcon.sprite = null; // Clear the icon if no item is assigned
-            }
+            itemIcon.enabled = hasItem && currentItem.icon != null;
+            itemIcon.sprite = hasItem ? currentItem.icon : null;
         }
 
+        Ball ball = teamObject.GetComponent<Ball>();
+        if (ball == null)
+        {
+            Debug.LogWarning("TeamItemSlot: teamObject does not have a Ball component.");
+            return;
+        }
 
+        Team team = ball.Team;
+        bool isMyTurn = GameManager.instance.currentTeam == team;
+
+        useItemButton.interactable = hasItem && isMyTurn;
+
+        if (greyPanel != null)
+        {
+            greyPanel.SetActive(hasItem && !isMyTurn);
+            Debug.Log($"Grey panel active: {greyPanel.activeSelf} (hasItem: {hasItem}, isMyTurn: {isMyTurn})");
+        }
     }
 
-    public void SetTeamObject(GameObject obj) {
+
+    public void SetTeamObject(GameObject obj)
+    {
         teamObject = obj;
     }
+
 
 }

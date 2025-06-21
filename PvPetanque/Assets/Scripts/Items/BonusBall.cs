@@ -7,23 +7,24 @@ public class BonusBall : GameEffect
 
     public override void Apply(GameObject target)
     {
-        // Check if the target has a Team component
-        TeamTag teamTag = target.GetComponent<TeamTag>();
         Debug.Log($"BonusBall: Applying bonus ball effect to target {target.name}.");
 
-        if (teamTag == null)
+        Ball ball = target.GetComponent<Ball>();
+        if (ball != null)
         {
-            Debug.LogWarning("BonusBall: Target does not have a TeamTag component.");
-            return;
-        }
-        if (teamTag != null)
-        {
-            Team team = teamTag.team;
-            Debug.Log($"BonusBall: Applying bonus ball effect to {team}.");
+            Team team = ball.Team;
+            if (team == null)
+            {
+                Debug.LogWarning("BonusBall: Ball does not have a Team assigned.");
+                return;
+            }
+            Debug.Log($"BonusBall: Ball belongs to team {team}.");
             GameManager.instance.IncreaseMaxBalls(team);
-
         }
+    
     }
+
+
     
 
 }

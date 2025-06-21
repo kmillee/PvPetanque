@@ -39,11 +39,24 @@ public static class MatchSettingsData
 
         for (int i = 0; i < availableItems.Count; i++)
         {
-            
+
             selectedItems.Add(availableItems[i]);
-            
+
         }
 
         // selectedItems.Clear(); // clear selection
     }
+    
+    public static void InitializeItems(List<GameEffect> items)
+    {
+        availableItems.Clear();
+        availableItems.AddRange(items);
+
+        selectedItems.Clear();
+        foreach (var item in items)
+        {
+            selectedItems.Add(item);
+        }
+    }
+
 }

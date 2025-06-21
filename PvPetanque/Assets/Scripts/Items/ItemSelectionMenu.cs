@@ -18,7 +18,6 @@ public class ItemSelectionMenu : MonoBehaviour
     public Transform topContainer;      // Parent of top 3 buttons
     public Transform bottomContainer;   // Parent of bottom 3 buttons
 
-    private HashSet<GameEffect> selectedItems = MatchSettingsData.selectedItems; //?? pointeur
 
     // This script sets up the item selection menu by assigning GameEffects to buttons
 
@@ -27,6 +26,8 @@ public class ItemSelectionMenu : MonoBehaviour
     { 
         MatchSettingsData.availableItems.Clear(); // Clear previous items
         MatchSettingsData.availableItems.AddRange(availableItems); // Add new items
+
+        MatchSettingsData.InitializeItems(new List<GameEffect>(availableItems));
         
         List<ItemButton> allButtons = new List<ItemButton>();
 
@@ -106,30 +107,23 @@ public class ItemSelectionMenu : MonoBehaviour
 
     public void UpdateItemSelection()
     {
-        // update game item selection
         MatchSettingsData.selectedItems.Clear();
+
         foreach (Transform child in topContainer)
         {
-            ItemButton button = child.GetComponent<ItemButton>();
-
+            var button = child.GetComponent<ItemButton>();
             if (button != null && button.IsSelected())
-            {
-                GameEffect item = button.item;
-                selectedItems.Add(item);
-            }
+                MatchSettingsData.selectedItems.Add(button.item);
         }
 
         foreach (Transform child in bottomContainer)
         {
-            ItemButton button = child.GetComponent<ItemButton>();
-
+            var button = child.GetComponent<ItemButton>();
             if (button != null && button.IsSelected())
-            {
-                GameEffect item = button.item;
-                selectedItems.Add(item);
-            }
+                MatchSettingsData.selectedItems.Add(button.item);
         }
     }
+
 
 }
 

@@ -52,7 +52,9 @@ public class BallSpawner : MonoBehaviour
     {
         ball.transform.SetParent(transform);
         
-        Ball ballScript = ball.AddComponent<Ball>();
+        Ball ballScript = ball.GetComponent<Ball>();
+        if (ballScript == null)
+            ballScript = ball.AddComponent<Ball>();
         
         // Set team before assigning material
         ballScript.Team = currentTeam;

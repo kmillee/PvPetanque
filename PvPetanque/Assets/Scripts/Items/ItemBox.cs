@@ -28,7 +28,7 @@ public class ItemBox : MonoBehaviour
             Debug.LogWarning($"ItemBox: Triggered by non-ball object {other.gameObject.name}");
             return;
         }
-        
+
         // Check if the ball belongs to a team
         Team team = ball.Team;
 
@@ -42,6 +42,11 @@ public class ItemBox : MonoBehaviour
         if (slot != null && !slot.HasItem)
         {
             GameEffect randomItem = GetRandomItem();
+            if (randomItem == null)
+            {
+                Debug.LogError("ItemBox: No item was selected to assign.");
+                return; // No item to assign
+            }
             slot.AssignItem(randomItem);
             Debug.Log($"ItemBox: Assigned {randomItem.name} to {team}.");
             Destroy(gameObject); // Remove box after pickup
@@ -56,10 +61,22 @@ public class ItemBox : MonoBehaviour
     {
         var selectedItems = MatchSettingsData.selectedItems;
         int index = Random.Range(0, selectedItems.Count);
-        Debug.Log($"ItemBox: Selected item index {index+1} from {selectedItems.Count} items.");
+        if (selectedItems.Count == 0)
+        {
+            Debug.LogError("ItemBox: No items available to select from.");
+            return null; // No items available
+        }
+
+        Debug.Log($"ItemBox: Selected item index {index + 1} from {selectedItems.Count} items.");
         // convert to a list to access by index
         var itemList = selectedItems.ToList();
         return Instantiate(itemList[index]); // Get a random item from the selected items
+    }
+    
+    public void SetTeamSlots(TeamItemSlot teamASlot, TeamItemSlot teamBSlot)
+    {
+        this.teamASlot = teamASlot;
+        this.teamBSlot = teamBSlot;
     }
 }
 

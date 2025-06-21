@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
 
     public RoundPhase roundPhase;
     public Team currentTeam;
-
+    private ItemBoxSpawner itemBoxSpawner;
 
     public TeamItemSlot GetTeamItemSlotA()
     {
@@ -162,11 +162,10 @@ public class GameManager : MonoBehaviour
         winningTeamText.text = "None";
 
         // Clear then Spawn item boxes
-        ItemBoxSpawner itemBoxSpawner = FindObjectOfType<ItemBoxSpawner>();
         if (itemBoxSpawner != null)
         {
             itemBoxSpawner.ClearItemBoxes();
-            itemBoxSpawner.SpawnitemBox();
+            itemBoxSpawner.SpawnItemBox(); // Spawn 1 item box at the start of each round
         }
 
 
@@ -229,6 +228,10 @@ public class GameManager : MonoBehaviour
     private IEnumerator TurnCoroutine()
     {
         Debug.Log("Next!");
+        // Try to spawn a new item box
+        if (itemBoxSpawner != null)
+            itemBoxSpawner.SpawnItemBox(0.5f, 1); // 50% chance to spawn an item box every turn
+
 
         // Throw a new ball
         Ball ballScript = ballSpawner.spawnBall(currentTeam);
@@ -434,6 +437,7 @@ public class GameManager : MonoBehaviour
         currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
 
         selectedItems = new List<GameEffect>(MatchSettingsData.selectedItems);
+        itemBoxSpawner = FindObjectOfType<ItemBoxSpawner>();
     }
     private void UpdateBallCountUI()
     {

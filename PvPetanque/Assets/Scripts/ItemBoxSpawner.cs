@@ -9,8 +9,6 @@ public class ItemBoxSpawner : MonoBehaviour
     private TeamItemSlot teamASlot;
     private TeamItemSlot teamBSlot;
     [SerializeField] private GameObject itemBoxPrefab; // Prefab of the power-up box
-    [SerializeField] private float spawnChance = 0.2f;
-    [SerializeField] private int spawnTries = 5; // Number of attempts to spawn a power-up box
     [SerializeField] private MeshCollider terrainCollider; 
     [SerializeField] private int seed = 143; 
     private Vector3 center;
@@ -43,10 +41,8 @@ public class ItemBoxSpawner : MonoBehaviour
         center = terrainCollider.bounds.center;
         extents = terrainCollider.bounds.extents;
     }
-
-    public void SpawnitemBox()
+    public void SpawnItemBox(float spawnChance = 1.0f, int spawnTries = 1)
     {
-
         Collider prefabCollider = itemBoxPrefab.GetComponent<Collider>();
         float boxExtentX = prefabCollider.bounds.extents.x;
         float boxExtentZ = prefabCollider.bounds.extents.z;
@@ -82,7 +78,6 @@ public class ItemBoxSpawner : MonoBehaviour
                     itemBox.SetTeamSlots(teamASlot, teamBSlot);
             }
         }
-        
     }
 
     public void ClearItemBoxes()

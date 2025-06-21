@@ -21,6 +21,10 @@ public class MatchSettingsManager : MonoBehaviour
     [SerializeField] private TMP_Text nameDisplayB;
     [SerializeField] private TMP_InputField nameInputB;
 
+    [Header("Selected Items")]
+    [SerializeField] private List<GameEffect> selectedItems; // This will be populated with the selected items
+
+
 
 
     void Start()
@@ -40,6 +44,17 @@ public class MatchSettingsManager : MonoBehaviour
         // Add listeners for names
         nameInputA.onEndEdit.AddListener(delegate { FinishNameEditA(); });
         nameInputB.onEndEdit.AddListener(delegate { FinishNameEditB(); });
+
+        // initialize selected items as all available items
+        // MatchSettingsData.InitializeItems(selectedItems);
+        // done in ItemSelectionMenu.cs
+
+    }
+
+    void Update()
+    {
+        // Update the selected items from MatchSettingsData
+        RefreshSelectedItemsFromData();
     }
 
     void SetupPointsDropdown()
@@ -145,6 +160,13 @@ public class MatchSettingsManager : MonoBehaviour
         nameInputB.gameObject.SetActive(false);
         nameDisplayB.gameObject.SetActive(true);
     }
+    
+
+    private void RefreshSelectedItemsFromData()
+    {
+        selectedItems = new List<GameEffect>(MatchSettingsData.selectedItems);
+    }
+
 
 
 }

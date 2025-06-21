@@ -161,10 +161,11 @@ public class GameManager : MonoBehaviour
         UpdateCurrentTeamUI();
         winningTeamText.text = "None";
 
-        // Spawn item boxes
+        // Clear then Spawn item boxes
         ItemBoxSpawner itemBoxSpawner = FindObjectOfType<ItemBoxSpawner>();
         if (itemBoxSpawner != null)
         {
+            itemBoxSpawner.ClearItemBoxes();
             itemBoxSpawner.SpawnitemBox();
         }
 

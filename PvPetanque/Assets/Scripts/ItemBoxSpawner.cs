@@ -85,6 +85,16 @@ public class ItemBoxSpawner : MonoBehaviour
         
     }
 
+    public void ClearItemBoxes()
+    {
+        // Clear all item boxes in the scene
+        ItemBox[] itemBoxes = FindObjectsOfType<ItemBox>();
+        foreach (var itemBox in itemBoxes)
+        {
+            Destroy(itemBox.gameObject);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {

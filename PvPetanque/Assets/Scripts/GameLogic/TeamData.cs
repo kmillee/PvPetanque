@@ -7,6 +7,11 @@ public static class TeamData
         return team == Team.TeamA ? MatchSettingsData.teamNameA : MatchSettingsData.teamNameB;
     }
 
+    public static Color GetTeamColor(Team team)
+    {
+        return team == Team.TeamA ? MatchSettingsData.teamColorA : MatchSettingsData.teamColorB;
+    }
+
 
 
 

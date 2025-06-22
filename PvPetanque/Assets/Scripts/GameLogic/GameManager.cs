@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject teamAItemPanel;
     [SerializeField] private GameObject teamBItemPanel;
+    [SerializeField] private GameObject notificationPanel;
 
     [Header("UI - Text Elements")]
     [SerializeField] private TextMeshProUGUI teamANameText;
@@ -193,7 +194,14 @@ public class GameManager : MonoBehaviour
         while (teamAcanPlay || teamBcanPlay)
         {
             // Update current team
-            currentTeam = (closest.Team == Team.TeamB && teamAcanPlay) || !teamBcanPlay ? Team.TeamA : Team.TeamB;
+            if (closest)
+            {
+                currentTeam = (closest.Team == Team.TeamB && teamAcanPlay) || !teamBcanPlay ? Team.TeamA : Team.TeamB;
+            }
+            else
+            {
+                currentTeam = currentTeam == Team.TeamA ? Team.TeamB : Team.TeamA;
+            }
             UpdateCurrentTeamUI();
             yield return TurnCoroutine();
 
@@ -230,7 +238,7 @@ public class GameManager : MonoBehaviour
         // Adjust item slots UI
         foreach (var slot in FindObjectsOfType<TeamItemSlot>())
         {
-            slot.RefreshUI(); 
+            slot.RefreshUI();
         }
 
         Debug.Log("Next!");
@@ -251,15 +259,16 @@ public class GameManager : MonoBehaviour
         yield return WaitForBallsToStop(new BoolReference());
 
         // Apply the swap effect if needed
-        if (SwapEffectManager.Instance != null && SwapEffectManager.Instance.effect != null) {
+        if (SwapEffectManager.Instance != null && SwapEffectManager.Instance.effect != null)
+        {
             Debug.Log("Applying swap effect to the ball.");
             // Debug.Log($"effect: {SwapEffectManager.Instance.effect}");
             SwapEffectManager.Instance.applySwap(ballScript.gameObject);
         }
-        
+
 
         // Update scores
-            ComputeTurnScores();
+        ComputeTurnScores();
 
         // Update UI
         UpdateBestDistanceUI();
@@ -289,6 +298,7 @@ public class GameManager : MonoBehaviour
 
     public void OnBallDisqualified(Ball ball)
     {
+        displayNotification("Ball is disqualified!");
         switch (ball.Team)
         {
             case Team.TeamA:
@@ -461,6 +471,7 @@ public class GameManager : MonoBehaviour
     private void UpdateCurrentTeamUI()
     {
         currentPlayerText.text = $"Current Turn: {TeamData.GetTeamName(currentTeam)}";
+        displayNotification($"{TeamData.GetTeamName(currentTeam)}'s turn!", TeamData.GetTeamColor(currentTeam));
     }
 
     private void UpdateBestDistanceUI()
@@ -491,6 +502,11 @@ public class GameManager : MonoBehaviour
     }
     private void UpdateLeadingTeamUI()
     {
+        if (closest == null)
+        {
+            winningTeamText.text = "";
+            return;
+        }
         winningTeamText.text = $"{TeamData.GetTeamName(closest.Team)} ({pointsThisRound} pts)";
     }
     private void UpdateWinnerUI()
@@ -566,6 +582,34 @@ public class GameManager : MonoBehaviour
         return team == Team.TeamA ? maxBallsTeamA : maxBallsTeamB;
     }
 
+    //display the current team panel with a notification for a few seconds
+    private void displayNotification(string message, Color color = default)
+    {
+        if (notificationPanel == null)
+        {
+            Debug.LogWarning("Notification panel is not set in GameManager.");
+            return;
+        }
+
+        if (color == default)
+        {
+            color = Color.black; // Default color if none is provided
+        }
+        // Set the notification panel active and update the text
+        notificationPanel.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 0.7f);
+        
+        notificationPanel.SetActive(true);
+        TextMeshProUGUI notificationText = notificationPanel.GetComponentInChildren<TextMeshProUGUI>();
+        notificationText.text = message;
+        StartCoroutine(HideNotificationPanelAfterDelay(2f));
+
+    }
+
+    private IEnumerator HideNotificationPanelAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        notificationPanel.SetActive(false);
+    }
 
 
 }

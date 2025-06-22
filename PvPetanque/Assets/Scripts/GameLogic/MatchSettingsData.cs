@@ -46,7 +46,7 @@ public static class MatchSettingsData
 
         // selectedItems.Clear(); // clear selection
     }
-    
+
     public static void InitializeItems(List<GameEffect> items)
     {
         availableItems.Clear();
@@ -58,5 +58,6 @@ public static class MatchSettingsData
             selectedItems.Add(item);
         }
     }
+
 
 }

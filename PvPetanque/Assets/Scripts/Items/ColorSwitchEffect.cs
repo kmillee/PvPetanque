@@ -3,7 +3,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game Effects/Switch Terrain Color")]
 public class ColorSwitchEffect : GameEffect
 {
-    public Color newColor = Color.cyan;
     private Color originalColor;
     private Material terrainMaterialInstance;
 
@@ -16,6 +15,8 @@ public class ColorSwitchEffect : GameEffect
             Renderer renderer = terrain.GetComponent<Renderer>();
             if (renderer != null)
             {
+                Color newColor = new Color(Random.value, Random.value, Random.value); // Generate a random color
+
                 // Create an instance of the material to avoid affecting the shared asset
                 terrainMaterialInstance = renderer.material;
 

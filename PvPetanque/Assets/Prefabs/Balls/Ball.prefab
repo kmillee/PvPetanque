@@ -199,7 +199,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   velocityAtMaxSinkRate: 3
   maxSinkRate: 0.08
-  maxSinkRateStandardDev: 0.02
+  maxSinkRateStandardDev: 0.005
   velocityToSinkRate:
     serializedVersion: 2
     m_Curve:
@@ -233,12 +233,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxDepthFromImpact: 0.2
-  maxDepthFromImpactStandardDev: 0.05
+  maxDepthFromImpact: 0.15
+  maxDepthFromImpactStandardDev: 0.01
   impactVelocityForMaxDepth: 20
   impulseAtMaxDislogement: 5
   maxDislogement: 0.05
-  maxDislogementStandardDev: 0.05
+  maxDislogementStandardDev: 0.001
   impulseToDislogement:
     serializedVersion: 2
     m_Curve:

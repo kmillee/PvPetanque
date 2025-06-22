@@ -15,7 +15,7 @@ MonoBehaviour:
   effectName: Attract
   description: 'attracting '
   icon: {fileID: 0}
-  duration: 5
+  duration: 2
   attractForce: 0.2
   attractRadius: 0.5
   minDistance: 0.2

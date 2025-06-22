@@ -35,9 +35,10 @@ public class ItemBox : MonoBehaviour
         TeamItemSlot slot = null;
         if (team == Team.TeamA)
             slot = teamASlot;
-        else
+        else if (team == Team.TeamB)
             slot = teamBSlot;
-
+        else
+            return; // it's a cochonnet
 
         if (slot != null && !slot.HasItem)
         {

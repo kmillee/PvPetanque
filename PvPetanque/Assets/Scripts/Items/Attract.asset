@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Attract
   m_EditorClassIdentifier: 
   effectName: Attract
-  description: 'attracting '
+  description: The next ball that you throw pulls in the nearby balls
   icon: {fileID: 21300000, guid: 83f040bf6d4e14d478c5d29da95b6ff1, type: 3}
   duration: 2
   attractForce: 0.2

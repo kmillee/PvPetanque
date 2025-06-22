@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shock Wave
   m_EditorClassIdentifier: 
   effectName: ShockWave
-  description: When a ball hits the ground, it creates a shock wave affecting every
+  description: When a ball hits the ground, a shockwave spreads and affects every
     object around it
   icon: {fileID: 21300000, guid: aade789c4df03f143b97ea071f6953d5, type: 3}
   duration: 1

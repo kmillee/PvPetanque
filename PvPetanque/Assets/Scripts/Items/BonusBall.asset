@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BonusBall
   m_EditorClassIdentifier: 
   effectName: Bonus Ball
-  description: You get a supplementary ball to throw.
+  description: You gain an extra ball.
   icon: {fileID: 21300000, guid: 7d9fdbdb147f1ff409f4df786a7e2f38, type: 3}
   duration: 0

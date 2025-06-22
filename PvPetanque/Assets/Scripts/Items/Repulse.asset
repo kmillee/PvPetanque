@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Repulse
   m_EditorClassIdentifier: 
   effectName: Repulse
-  description: get away from meeeeeeeeeeee
+  description: The next ball that you throw pushes away the nearby balls
   icon: {fileID: 21300000, guid: f1866d25e6272c942b884edc2e5ba7e3, type: 3}
   duration: 2
   repulseForce: 0.2

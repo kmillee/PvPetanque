@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ColorToRed
   m_EditorClassIdentifier: 
   effectName: ColorSwitch
-  description: 
+  description: Changes the color of the field
   icon: {fileID: 21300000, guid: ef37337236b0c7a409b2db33604ac7f3, type: 3}
   duration: 0
   newColor: {r: 0.7216981, g: 0, b: 0, a: 1}

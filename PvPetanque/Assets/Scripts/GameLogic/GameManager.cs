@@ -541,8 +541,17 @@ public class GameManager : MonoBehaviour
     }
     private void ShowEndGameUI()
     {
-        gameUI.SetActive(false);
+        Debug.Log("Showing end game UI");
         endGameUI.SetActive(true);
+
+        GameObject panel = endGameUI.GetComponentInChildren<Image>().gameObject;
+        TextMeshProUGUI endGameText = panel.GetComponentInChildren<TextMeshProUGUI>();
+
+        Team winnerTeam = teamAScore > teamBScore ? Team.TeamA : Team.TeamB;
+        panel.GetComponent<Image>().color = TeamData.GetTeamColor(winnerTeam);
+        endGameText.color = GetTextColorForBackground(TeamData.GetTeamColor(winnerTeam));
+        endGameText.text = $"{TeamData.GetTeamName(teamAScore > teamBScore ? Team.TeamA : Team.TeamB)} wins!";
+        
     }
     public void ChangeToMenu()
     {
@@ -597,10 +606,12 @@ public class GameManager : MonoBehaviour
         }
         // Set the notification panel active and update the text
         notificationPanel.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 0.7f);
-        
+
         notificationPanel.SetActive(true);
         TextMeshProUGUI notificationText = notificationPanel.GetComponentInChildren<TextMeshProUGUI>();
         notificationText.text = message;
+        notificationText.color = GetTextColorForBackground(color);
+
         StartCoroutine(HideNotificationPanelAfterDelay(2f));
 
     }

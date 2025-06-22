@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectName: Repulse
   description: get away from meeeeeeeeeeee
-  icon: {fileID: 21300000, guid: 896542b9c6b31554f9745a67cece416b, type: 3}
+  icon: {fileID: 21300000, guid: f1866d25e6272c942b884edc2e5ba7e3, type: 3}
   duration: 2
   repulseForce: 0.2
   repulseRadius: 0.5

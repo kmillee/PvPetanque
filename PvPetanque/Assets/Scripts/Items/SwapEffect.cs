@@ -13,6 +13,7 @@ public class SwapEffect : GameEffect
 
     public void ApplySwap(GameObject target)
     {
+    
         Collider[] colliders = Physics.OverlapSphere(target.transform.position, swapRadius);
         if (colliders.Length == 0) return; // No balls found within the radius
 
@@ -41,6 +42,7 @@ public class SwapEffect : GameEffect
 
     public override void Apply(GameObject target)
     {
+        Debug.Log($"Applying SwapEffect to {target.name}");
         SwapEffectManager.Instance.StartSwap(target, this);
     }
     public override void Revert(GameObject target) { }

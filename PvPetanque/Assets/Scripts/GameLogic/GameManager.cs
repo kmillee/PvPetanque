@@ -251,12 +251,15 @@ public class GameManager : MonoBehaviour
         yield return WaitForBallsToStop(new BoolReference());
 
         // Apply the swap effect if needed
-        if (SwapEffectManager.Instance != null && SwapEffectManager.Instance.effect != null)
+        if (SwapEffectManager.Instance != null && SwapEffectManager.Instance.effect != null) {
+            Debug.Log("Applying swap effect to the ball.");
+            // Debug.Log($"effect: {SwapEffectManager.Instance.effect}");
             SwapEffectManager.Instance.applySwap(ballScript.gameObject);
+        }
         
 
         // Update scores
-        ComputeTurnScores();
+            ComputeTurnScores();
 
         // Update UI
         UpdateBestDistanceUI();

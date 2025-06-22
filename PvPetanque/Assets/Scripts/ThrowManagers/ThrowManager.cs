@@ -10,7 +10,7 @@ public abstract class ThrowManager : MonoBehaviour
     protected Rigidbody CurrentBallRb;
     protected Ball CurrentBallScript;
 
-    protected bool useGlobalCamera;
+    protected bool useGlobalCamera = false;
 
     public IEnumerator BallThrowCoroutine(Ball ballScript)
     {

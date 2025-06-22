@@ -566,30 +566,6 @@ public class GameManager : MonoBehaviour
         return team == Team.TeamA ? maxBallsTeamA : maxBallsTeamB;
     }
 
-     private bool mainCameraActive = true; // oui je sais c'est barbare de mettre ça ici, mais c'est pour que tu organises comme tu veux !
-    [SerializeField] private GameObject regularUI;
-
-    public void OnCameraButtonClicked()
-    {
-        Debug.Log("Camera button clicked!");
-
-        if (mainCameraActive)
-        {
-            // Switch to the second camera
-
-            // j'avais la flemme de m'arranger pour que buttonCamera soit sur un autre canvas, donc on désactive tout le reste
-            regularUI.SetActive(false);
-            mainCameraActive = false;
-
-        }
-        else
-        {
-            // Switch back to the main camera
-            regularUI.SetActive(true);
-            mainCameraActive = true;
-            
-        }
-    }
 
 
 }

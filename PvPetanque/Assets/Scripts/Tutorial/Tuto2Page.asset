@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
-  m_Name: runnerPage
+  m_Name: Tuto2Page
   m_EditorClassIdentifier: 
   category: 0
   pageTitle: Game flow
@@ -26,7 +26,6 @@ MonoBehaviour:
     thrown all of their balls, the opponent team gets to throw their remaining ones.\r\n\n\nWhen
     all 12 total balls have been thrown, we count the point of the round.\n\nOnly
     the team that is leading (owns the closest ball to the goal) gets to win points.\n\nThey
-    will get a point for each ball they have closer to the goal than their opponents.
-    (See example next slide)"
+    will get a point for each ball they have closer to the goal than their opponents."
   pageImage: {fileID: 0}
   pageVideo: {fileID: 0}

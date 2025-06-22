@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
-  m_Name: ScoringPage
+  m_Name: Tuto3Page
   m_EditorClassIdentifier: 
   category: 0
   pageTitle: Scoring
   pageText: "Here, the red team scores two points, since they have 2 balls closer
     to the cochonnet than black team\u2019s best ball.\n\r\nThe round\u2019s winning
     team gets to begin the next round. \n\nA match ends at 13pts."
-  pageImage: {fileID: 21300000, guid: 58a40229c3e2ce14b898cfdd1ff7c5d5, type: 3}
+  pageImage: {fileID: 0}
   pageVideo: {fileID: 0}

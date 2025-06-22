@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
-  m_Name: pinguPage
+  m_Name: Tuto1Page
   m_EditorClassIdentifier: 
   category: 0
   pageTitle: The basics

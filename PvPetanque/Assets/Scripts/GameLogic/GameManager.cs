@@ -37,10 +37,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject teamAScorePanel;
     [SerializeField] private GameObject teamBScorePanel;
     [SerializeField] private GameObject endGameUI;
+    [SerializeField] private GameObject endMenu;
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject teamAItemPanel;
     [SerializeField] private GameObject teamBItemPanel;
     [SerializeField] private GameObject notificationPanel;
+    [SerializeField] private ConfettiController confettiController;
 
     [Header("UI - Text Elements")]
     [SerializeField] private TextMeshProUGUI teamANameText;
@@ -541,17 +543,23 @@ public class GameManager : MonoBehaviour
     }
     private void ShowEndGameUI()
     {
+
+        Team winnerTeam = teamAScore > teamBScore ? Team.TeamA : Team.TeamB;
+        string winnerName = TeamData.GetTeamName(winnerTeam);
+        Color color = TeamData.GetTeamColor(winnerTeam);
         Debug.Log("Showing end game UI");
         endGameUI.SetActive(true);
 
-        GameObject panel = endGameUI.GetComponentInChildren<Image>().gameObject;
-        TextMeshProUGUI endGameText = panel.GetComponentInChildren<TextMeshProUGUI>();
+        confettiController.Play(color);
 
-        Team winnerTeam = teamAScore > teamBScore ? Team.TeamA : Team.TeamB;
-        panel.GetComponent<Image>().color = TeamData.GetTeamColor(winnerTeam);
-        endGameText.color = GetTextColorForBackground(TeamData.GetTeamColor(winnerTeam));
-        endGameText.text = $"{TeamData.GetTeamName(teamAScore > teamBScore ? Team.TeamA : Team.TeamB)} wins!";
-        
+        TextMeshProUGUI endGameText = endMenu.GetComponentInChildren<TextMeshProUGUI>();
+
+        endMenu.GetComponentInChildren<Image>().color = color;
+        endGameText.color = GetTextColorForBackground(color);
+        endGameText.text = $"{winnerName} wins!";
+
+
+
     }
     public void ChangeToMenu()
     {
@@ -621,6 +629,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         notificationPanel.SetActive(false);
     }
+
 
 
 }

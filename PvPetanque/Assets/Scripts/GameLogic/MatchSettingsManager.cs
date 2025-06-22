@@ -160,7 +160,7 @@ public class MatchSettingsManager : MonoBehaviour
         nameInputB.gameObject.SetActive(false);
         nameDisplayB.gameObject.SetActive(true);
     }
-    
+
 
     private void RefreshSelectedItemsFromData()
     {

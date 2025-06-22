@@ -12,7 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
   m_Name: runnerPage
   m_EditorClassIdentifier: 
-  pageTitle: coin coin
-  pageText: sittim is the opposite of standim
-  pageImage: {fileID: 21300000, guid: 16f0ebbf3656b8148838623ff9d50765, type: 3}
+  category: 0
+  pageTitle: Game flow
+  pageText: "The first team to play is designated randomly. \n\nThey get to throw
+    to cochonnet on the field and start with the first shot.\n\n\nThen, the opposing
+    team shoots their first ball and tries to get as close to the cochonnet as possible
+    (or to move the opponent\u2019s ball away).\n\nFrom these two first shots, the
+    next playing team depends on whose ball is the closest from the goal :\n\nIf
+    the closest ball was thrown by team A, then team B shoots the next one, and will
+    shoot as long as team A is the closest to goal (and as long as team B has balls
+    left to throw). \n\nThe moment team B takes the lead (is closer to the goal),
+    then team A gets to shoot and so on.\r\n\n\nWhen one of the teams has eventually
+    thrown all of their balls, the opponent team gets to throw their remaining ones.\r\n\n\nWhen
+    all 12 total balls have been thrown, we count the point of the round.\n\nOnly
+    the team that is leading (owns the closest ball to the goal) gets to win points.\n\nThey
+    will get a point for each ball they have closer to the goal than their opponents.
+    (See example next slide)"
+  pageImage: {fileID: 0}
   pageVideo: {fileID: 0}

@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
-  m_Name: pinguPage
+  m_Name: ScoringPage
   m_EditorClassIdentifier: 
   category: 0
-  pageTitle: The basics
-  pageText: "Two teams compete (either 1v1, 2v2 or 3v3). \n\nEach team starts with
-    a total of 6 metallic balls, and need to get a total of 13 points. \n\nTo obtain
-    points, both teams need to throw their balls as close as possible to a smaller
-    wooden ball called the cochonnet.\r\n"
-  pageImage: {fileID: 0}
+  pageTitle: Scoring
+  pageText: "Here, the red team scores two points, since they have 2 balls closer
+    to the cochonnet than black team\u2019s best ball.\n\r\nThe round\u2019s winning
+    team gets to begin the next round. \n\nA match ends at 13pts."
+  pageImage: {fileID: 21300000, guid: 58a40229c3e2ce14b898cfdd1ff7c5d5, type: 3}
   pageVideo: {fileID: 0}

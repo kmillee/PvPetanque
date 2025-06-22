@@ -14,6 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   pageTitle: How to play?
-  pageText: You click and you stop to click.
+  pageText: 'Aim with your mouse in the direction you want to throw your ball.
+
+
+    To
+    shoot, press on the right mouse button to strengthen the throw (the longer the
+    press the stronger the throw)
+
+
+    To pick up an item, throw one of your balls
+    on the item boxes.
+
+
+    To use the item, click on it in the bottom right corner
+    of the screen. It will be applied during your next throw.'
   pageImage: {fileID: 0}
   pageVideo: {fileID: 0}

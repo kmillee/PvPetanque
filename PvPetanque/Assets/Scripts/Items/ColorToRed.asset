@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectName: ColorSwitch
   description: Changes the color of the field
-  icon: {fileID: 21300000, guid: ef37337236b0c7a409b2db33604ac7f3, type: 3}
+  icon: {fileID: 21300000, guid: 1feb781e0ea97fa4e9da851bee2785ce, type: 3}
   duration: 0
   newColor: {r: 0.7216981, g: 0, b: 0, a: 1}

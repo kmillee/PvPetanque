@@ -5,6 +5,7 @@ public class InGameButtonMangager : MonoBehaviour
 {
     public GameObject settingsMenu;
     public GameObject quitConfirmMenu;
+    public GameObject helpMenu;
 
     public void changeToMenu()
     {
@@ -23,6 +24,19 @@ public class InGameButtonMangager : MonoBehaviour
         }
     }
 
+    public void switchHelpUI()
+    {
+        if (helpMenu.activeSelf)
+        {
+            settingsMenu.SetActive(true);
+            helpMenu.SetActive(false);
+        }
+        else
+        {
+            settingsMenu.SetActive(false);
+            helpMenu.SetActive(true);
+        }
+    }
 
     // ask player to confirm quitting (menu appears or disappears)
     public void switchQuitUI()

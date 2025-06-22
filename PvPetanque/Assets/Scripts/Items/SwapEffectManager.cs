@@ -8,7 +8,8 @@ public class SwapEffectManager : MonoBehaviour
     public static SwapEffectManager Instance;
 
     void Awake()
-    {
+    {    
+        effect = null;
         Instance = this;
     }
 
@@ -21,6 +22,11 @@ public class SwapEffectManager : MonoBehaviour
 
     public void applySwap(GameObject target)
     {
+        if (!pendingSwap || swapTarget == null || effect == null)
+        {
+            Debug.LogWarning("SwapEffectManager: No pending swap to apply.");
+            return;
+        }
         effect.ApplySwap(swapTarget);
         pendingSwap = false;
         swapTarget = null;

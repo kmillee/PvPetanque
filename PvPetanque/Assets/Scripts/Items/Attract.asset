@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectName: Attract
   description: 'attracting '
-  icon: {fileID: 0}
-  duration: 5
+  icon: {fileID: 21300000, guid: 83f040bf6d4e14d478c5d29da95b6ff1, type: 3}
+  duration: 2
   attractForce: 0.2
   attractRadius: 0.5
   minDistance: 0.2

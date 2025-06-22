@@ -68,6 +68,8 @@ public class Ball : MonoBehaviour
         if (!HitGround && other.CompareTag("Ground"))
         {
             HitGround = true;
+            if (ShockWaveManager.Instance != null)
+                ShockWaveManager.Instance.ApplyShockwave(gameObject);
         }
 
         if (other.CompareTag("TerrainBounds"))

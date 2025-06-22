@@ -3,75 +3,96 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using TMPro;
 using System.Collections.Generic;
-using UnityEngine.Serialization;
+using System.Linq;
 
 public class TutorialManager : MonoBehaviour
 {
-    [SerializeField] private TutorialPage[] pages;
+    [SerializeField] private TutorialPage[] allPages;
     [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private TextMeshProUGUI textBox;
-    [SerializeField] private Image imageBox;
-    [SerializeField] private VideoPlayer videoPlayer;
-    [SerializeField] private RawImage rawImage;
+    [SerializeField] private TextMeshProUGUI scrollableTextBox;
     [SerializeField] private GameObject prevButton;
     [SerializeField] private GameObject nextButton;
-    
 
+    [SerializeField] private RectTransform textArea;
+    [SerializeField] private GameObject mediaColumn;
+    [SerializeField] private GameObject imagePrefab; 
+    [SerializeField] private GameObject videoPrefab; 
+
+
+
+
+    private List<TutorialPage> currentPages = new List<TutorialPage>();
     private int currentIndex = 0;
 
     void Start()
     {
+        SelectCategory(TutorialCategory.Gameplay); // Default category
+    }
+
+    public void SelectCategory(TutorialCategory category)
+    {
+        currentPages = allPages
+            .Where(p => p.category == category)
+            .OrderBy(p => p.name) // Optional: control order
+            .ToList();
+
         ShowPage(0);
     }
+
 public void ShowPage(int index)
 {
-    if (index < 0 || index >= pages.Length) return;
+    if (currentPages == null || index < 0 || index >= currentPages.Count) return;
 
     currentIndex = index;
-    var page = pages[index];
+    var page = currentPages[index];
 
-    // Set text
     titleText.text = page.pageTitle;
-    textBox.text = page.pageText;
+    scrollableTextBox.text = page.pageText;
 
-    // Show or hide image
+    // Navigation buttons
+    prevButton.SetActive(currentIndex > 0);
+    nextButton.SetActive(currentIndex < currentPages.Count - 1);
+
+    // Clear previous media
+    foreach (Transform child in mediaColumn.transform)
+        Destroy(child.gameObject);
+
+    bool hasMedia = false;
+
+    // Image
     if (page.pageImage != null)
     {
-        imageBox.gameObject.SetActive(true);
-        imageBox.sprite = page.pageImage;
-    }
-    else
-    {
-        imageBox.gameObject.SetActive(false);
+        hasMedia = true;
+        GameObject imageGO = Instantiate(imagePrefab, mediaColumn.transform);
+        imageGO.GetComponent<Image>().sprite = page.pageImage;
     }
 
-    // Show or hide video
+    // Video
     if (page.pageVideo != null)
     {
-        videoPlayer.gameObject.SetActive(true);
-        videoPlayer.clip = page.pageVideo;
-        videoPlayer.isLooping = true; // 🔁 Loop the video
-        videoPlayer.Play();
+        hasMedia = true;
+        GameObject videoGO = Instantiate(videoPrefab, mediaColumn.transform);
+        var player = videoGO.GetComponent<VideoPlayer>();
+        player.clip = page.pageVideo;
+        player.isLooping = true;
+        player.Play();
     }
-    else
-    {
-        videoPlayer.Stop();
-        videoPlayer.gameObject.SetActive(false);
-    }
-    rawImage.gameObject.SetActive(page.pageVideo != null);
 
-    // Navigation buttons visibility
-    prevButton.SetActive(currentIndex > 0);
-    nextButton.SetActive(currentIndex < pages.Length - 1);
+    // Enable or disable media column
+    mediaColumn.SetActive(hasMedia);
+
+    // Adjust text area width dynamically
+
+
+
 }
 
-    public void NextPage()
+    public void NextPage() => ShowPage(currentIndex + 1);
+    public void PrevPage() => ShowPage(currentIndex - 1);
+
+    public void SelectCategoryByIndex(int index)
     {
-        ShowPage(currentIndex + 1);
+        SelectCategory((TutorialCategory)index);
     }
 
-    public void PrevPage()
-    {
-        ShowPage(currentIndex - 1);
-    }
 }

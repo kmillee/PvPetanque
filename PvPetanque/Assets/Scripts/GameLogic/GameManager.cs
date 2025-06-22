@@ -27,6 +27,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; //singleton instance
 
+    [Header("Item Slots")]
+    [SerializeField] private TeamItemSlot teamASlot;
+    [SerializeField] private TeamItemSlot teamBSlot;
+
     [Header("UI - Panels")]
     [SerializeField] private GameObject teamAPanel;
     [SerializeField] private GameObject teamBPanel;
@@ -81,9 +85,16 @@ public class GameManager : MonoBehaviour
 
     public RoundPhase roundPhase;
     public Team currentTeam;
+    private ItemBoxSpawner itemBoxSpawner;
 
-
-
+    public TeamItemSlot GetTeamItemSlotA()
+    {
+        return teamASlot;
+    }
+    public TeamItemSlot GetTeamItemSlotB()
+    {
+        return teamBSlot;
+    }
     public void Awake()
     {
         if (instance == null)
@@ -142,11 +153,21 @@ public class GameManager : MonoBehaviour
     private IEnumerator RoundCoroutine()
     {
         ClearBalls();
+        RepulseEffectManager.Instance.ClearRepulsors();
+        AttractEffectManager.Instance.ClearAttractors();
 
         UpdateTeamScoreUI();
         UpdateBallCountUI();
         UpdateCurrentTeamUI();
         winningTeamText.text = "None";
+
+        // Clear then Spawn item boxes
+        if (itemBoxSpawner != null)
+        {
+            itemBoxSpawner.ClearItemBoxes();
+            itemBoxSpawner.SpawnItemBox(); // Spawn 1 item box at the start of each round
+        }
+
 
         // Cochonnet time !
         do
@@ -206,7 +227,17 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator TurnCoroutine()
     {
+        // Adjust item slots UI
+        foreach (var slot in FindObjectsOfType<TeamItemSlot>())
+        {
+            slot.RefreshUI(); 
+        }
+
         Debug.Log("Next!");
+        // Try to spawn a new item box
+        if (itemBoxSpawner != null)
+            itemBoxSpawner.SpawnItemBox(0.5f, 1); // 50% chance to spawn an item box every turn
+
 
         // Throw a new ball
         Ball ballScript = ballSpawner.spawnBall(currentTeam);
@@ -220,12 +251,15 @@ public class GameManager : MonoBehaviour
         yield return WaitForBallsToStop(new BoolReference());
 
         // Apply the swap effect if needed
-        if (SwapEffectManager.Instance != null && SwapEffectManager.Instance.effect != null)
+        if (SwapEffectManager.Instance != null && SwapEffectManager.Instance.effect != null) {
+            Debug.Log("Applying swap effect to the ball.");
+            // Debug.Log($"effect: {SwapEffectManager.Instance.effect}");
             SwapEffectManager.Instance.applySwap(ballScript.gameObject);
+        }
         
 
         // Update scores
-        ComputeTurnScores();
+            ComputeTurnScores();
 
         // Update UI
         UpdateBestDistanceUI();
@@ -412,6 +446,7 @@ public class GameManager : MonoBehaviour
         currentTeam = MatchSettingsData.firstTeam; // Set the current team based on MatchSettingsData
 
         selectedItems = new List<GameEffect>(MatchSettingsData.selectedItems);
+        itemBoxSpawner = FindObjectOfType<ItemBoxSpawner>();
     }
     private void UpdateBallCountUI()
     {

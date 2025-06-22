@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe876c63f2fbd54d81ef1f76b940b44, type: 3}
+  m_Name: ItemColorPage
+  m_EditorClassIdentifier: 
+  category: 2
+  pageTitle: ColorSwitch
+  pageText: Changes the color of the field
+  pageImage: {fileID: 21300000, guid: 1feb781e0ea97fa4e9da851bee2785ce, type: 3}
+  pageVideo: {fileID: 0}

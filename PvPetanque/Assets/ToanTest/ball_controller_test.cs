@@ -1,42 +1,26 @@
+using System;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class ball_controller_test : MonoBehaviour
 {
+    private Rigidbody rb;
+    private Vector3 startingPosition;
 
-    private Rigidbody _rb;
-    [SerializeField] private float strength = 5;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
+        TryGetComponent(out rb);
+        startingPosition = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
-        if (Input.GetKey("."))
+        if(Input.GetKeyDown("space"))
         {
-            _rb.AddForce(Vector3.forward * strength);
+            transform.position = startingPosition;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
-
-        if (Input.GetKey("e"))
-        {
-            _rb.AddForce(Vector3.back * strength);
-        }
-
-        if (Input.GetKey("u"))
-        {
-            _rb.AddForce(Vector3.right * strength);
-        }
-
-        if (Input.GetKey("o"))
-        {
-            _rb.AddForce(Vector3.left * strength);
-        }
-
-        // transform.Rotate(new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), 0f), strength, Space.World);
-        transform.rotation *= Quaternion.Euler(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), 0f);
     }
 }

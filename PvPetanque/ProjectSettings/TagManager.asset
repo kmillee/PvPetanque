@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Ground
   - TerrainBounds
-  - ValidTerrain
+  - Ball
   layers:
   - Default
   - TransparentFX

@@ -65,11 +65,6 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!HitGround && other.CompareTag("Ground"))
-        {
-            HitGround = true;
-        }
-
         if (other.CompareTag("TerrainBounds"))
         {
             InBounds = true;
@@ -81,6 +76,14 @@ public class Ball : MonoBehaviour
         if (other.CompareTag("TerrainBounds"))
         {
             InBounds = false;
+        }
+    }
+    
+    private void OnCollisionEnter(Collision other)
+    {
+        if (!HitGround && other.collider.CompareTag("Ground"))
+        {
+            HitGround = true;
         }
     }
     

@@ -63,15 +63,19 @@ public class Ball : MonoBehaviour
         return rb.linearVelocity.magnitude > epsilon;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (!HitGround && other.CompareTag("Ground"))
+        if (!HitGround && other.collider.CompareTag("Ground"))
         {
             HitGround = true;
             if (ShockWaveManager.Instance != null)
-                ShockWaveManager.Instance.ApplyShockwave(gameObject);
+                ShockWaveManager.Instance.ApplyShockwave(gameObject);            
         }
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        
         if (other.CompareTag("TerrainBounds"))
         {
             InBounds = true;

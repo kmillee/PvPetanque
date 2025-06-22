@@ -219,6 +219,9 @@ public class GameManager : MonoBehaviour
         roundPhase = RoundPhase.EndRound;
         currentPlayerText.text = "Round Ended!";
 
+        maxBallsTeamA = MatchSettingsData.ballsPerTeam;
+        maxBallsTeamB = MatchSettingsData.ballsPerTeam;
+
         switch (closest.Team)
         {
             case Team.TeamA:
@@ -329,6 +332,7 @@ public class GameManager : MonoBehaviour
     {
         teamAScore = 0;
         teamBScore = 0;
+
     }
     private void ClearBalls()
     {

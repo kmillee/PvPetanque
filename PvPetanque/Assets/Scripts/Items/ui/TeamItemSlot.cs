@@ -67,6 +67,11 @@ public class TeamItemSlot : MonoBehaviour
             itemIcon.sprite = hasItem ? currentItem.icon : null;
         }
 
+        if (teamObject == null)
+        {
+            Debug.LogWarning("no teamobject");
+            return;
+        }
         Ball ball = teamObject.GetComponent<Ball>();
         if (ball == null)
         {

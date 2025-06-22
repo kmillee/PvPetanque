@@ -21,7 +21,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6719621482213152628
 Transform:
   m_ObjectHideFlags: 0
@@ -103,33 +103,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDepth: 0.3
-  dragMultiplier: 1
+  dragMultiplier: 0.5
   depthToDrag:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2.8301885
-      outSlope: 2.8301885
+      inSlope: 4.2452826
+      outSlope: 4.2452826
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.05
+      outWeight: 0.05050505
     - serializedVersion: 3
-      time: 0.26320952
-      value: 0.7781649
-      inSlope: 1.3352523
-      outSlope: 1.3352523
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.12395957
-    - serializedVersion: 3
-      time: 0.44583434
-      value: 0.9221697
-      inSlope: 0.46448693
-      outSlope: 0.46448693
+      time: 0.32666665
+      value: 0.7382075
+      inSlope: 1.3243098
+      outSlope: 1.3243098
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -137,8 +128,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.011320783
-      outSlope: 0.011320783
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.20833331
@@ -146,23 +137,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  velocityAtMaxSinkRate: 3
+  velocityAtMaxSinkRate: 10
   maxSinkRate: 0.05
   velocityToSinkRate:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 0.5757971
-      outSlope: 0.5757971
+      value: 0.1
+      inSlope: 1.584905
+      outSlope: 1.584905
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.48333332
+      outWeight: 0.15
     - serializedVersion: 3
-      time: 0.5
-      value: 1
+      time: 0.6416626
+      value: 0.997879
       inSlope: -0.0006806222
       outSlope: -0.0006806222
       tangentMode: 0
@@ -172,38 +163,38 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0.4
-      inSlope: -1.2
-      outSlope: -1.2
-      tangentMode: 34
+      inSlope: -0.122486725
+      outSlope: -0.122486725
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.5083333
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxDepthFromImpact: 0.1
   maxDepthFromImpactStandardDev: 0.025
-  impactVelocityForMaxDepth: 10
+  impactVelocityForMaxDepth: 20
   impulseAtMaxDislogement: 5
-  maxDislogement: 0.2
+  maxDislogement: 0.1
   impulseToDislogement:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -261,6 +252,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  velocityLimitParameter: 0.5
 --- !u!114 &723438379377234112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,7 +272,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8703943566963468850}
-  m_Material: {fileID: 13400000, guid: 0878b5aba42b1104cbd6c2be9b9ee14d, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

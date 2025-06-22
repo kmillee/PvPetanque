@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -25,7 +26,6 @@ public class SandFriction3 : MonoBehaviour
     [SerializeField, Min(0f)] private float dragMultiplier = 1f;
     [SerializeField] private AnimationCurve depthToDrag;
     
-    
     [Header("Velocity To Sink Rate Conversion parameters")]
     [SerializeField, Min(0f)] private float velocityAtMaxSinkRate = 10f;
     [SerializeField, Min(0f)] private float maxSinkRate = 0.1f;
@@ -41,19 +41,21 @@ public class SandFriction3 : MonoBehaviour
     [SerializeField, Min(0f)] private float maxDislogement = 0.2f;
     [SerializeField] private AnimationCurve impulseToDislogement;
     [SerializeField] private AnimationCurve angleToDislogement;
+
+    [Header("Velocity Limit")]
+    [SerializeField] private float velocityLimitParameter = 1f;
     
     private void HandleFriction()
     {
-        float v = Mathf.Clamp01(rb.linearVelocity.magnitude / velocityAtMaxSinkRate);
+        float velocity = rb.linearVelocity.magnitude;
+        float v = Mathf.Clamp01(velocity / velocityAtMaxSinkRate);
         float sinkRate = maxSinkRate * velocityToSinkRate.Evaluate(v);
-        float sink = sinkRate * rb.linearVelocity.magnitude * Time.deltaTime;
+
+        float sink = sinkRate * velocity * Time.deltaTime;
         
         // add randomness
 
         Depth += sink;
-        
-        if(gameObject.name.Equals("Sphere"))
-            Debug.Log($"v : {v} | sinkRate : {sinkRate} | velocity : {rb.linearVelocity.magnitude} | sink : {sink}");
         
     }
 
@@ -79,7 +81,6 @@ public class SandFriction3 : MonoBehaviour
         
         Depth += d;
         
-        // Debug.Log($"Collision with ground : {d}", context:this);
     }
     
     private void HandleOtherCollision(Collision other)
@@ -104,22 +105,24 @@ public class SandFriction3 : MonoBehaviour
 
         Depth -= d;
         
-        // Debug.Log($"{Depth + d} -> {Depth}", this);
+
+        Vector3 impulse = contact.impulse;
+        rb.AddForce(-impulse, ForceMode.Impulse);
         
         UpdateDamping();
 
-        rb.AddForce(0.5f * other.impulse, ForceMode.Impulse);
-        
+        StartCoroutine(ReapplyImpulse(impulse));
 
+    }
+
+    private IEnumerator ReapplyImpulse(Vector3 impulse)
+    {
+        yield return new WaitForFixedUpdate();
+        rb.AddForce(impulse, ForceMode.Impulse);
     }
  
     private void UpdateDamping()
     {
-        // float drag = Mathf.Clamp01(Depth / maxDepth);
-        // drag = Mathf.Pow(drag, depthToDragCurveCoef);
-        // drag = Mathf.Tan(Mathf.PI * 0.4999f * drag);
-        // drag = dragMultiplier * Mathf.Clamp(drag, 0, float.PositiveInfinity);
-
         float d = Mathf.Clamp01(Depth / maxDepth);
         float drag = depthToDrag.Evaluate(d);
         drag = Mathf.Tan(Mathf.PI * 0.4999f * drag);
@@ -128,8 +131,6 @@ public class SandFriction3 : MonoBehaviour
         rb.linearDamping = drag;
         rb.angularDamping = drag;
         
-        if(gameObject.name.Equals("Sphere"))
-            Debug.Log($"Depth : {Depth} | Drag : {drag}", context:this);
     }
     
 
@@ -148,10 +149,20 @@ public class SandFriction3 : MonoBehaviour
         if (onGround)
         {
             HandleFriction();
+            
         }
         
         UpdateDamping();
         
+        // Stopping mechanism
+        float velocity = rb.linearVelocity.magnitude;
+        float limit = -Mathf.Log(1 - Depth / maxDepth) * velocityLimitParameter;
+        if (velocity < limit)
+        {
+            rb.linearDamping = float.PositiveInfinity;
+            rb.angularDamping = float.PositiveInfinity;
+        }
+
     }
 
     

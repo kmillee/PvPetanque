@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this); // persist from menu to game scene
+            // DontDestroyOnLoad(this); // persist from menu to game scene
         }
         else
         {

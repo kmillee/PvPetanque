@@ -67,7 +67,7 @@ public class ObstacleSpawner : MonoBehaviour
 
                 // Adjust y position based on longest axis
                 float longestAxis = Mathf.Max(obstacle.transform.localScale.x, obstacle.transform.localScale.y, obstacle.transform.localScale.z);
-                obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y + longestAxis + 3f, obstacle.transform.position.z);
+                obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y + longestAxis, obstacle.transform.position.z);
 
                 // ------- Physics Setup -------
                 // Add Rigidbody component

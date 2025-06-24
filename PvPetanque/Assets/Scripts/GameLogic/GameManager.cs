@@ -246,6 +246,9 @@ public class GameManager : MonoBehaviour
             slot.RefreshUI();
         }
 
+        RepulseEffectManager.Instance.OnTurnStart();
+        AttractEffectManager.Instance.OnTurnStart();
+
         Debug.Log("Next!");
         // Try to spawn a new item box
         if (itemBoxSpawner != null)

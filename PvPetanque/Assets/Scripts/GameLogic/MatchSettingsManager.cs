@@ -29,6 +29,8 @@ public class MatchSettingsManager : MonoBehaviour
 
     void Start()
     {
+        MatchSettingsData.ResetToDefaults(); // Reset to default settings        
+
         SetupPointsDropdown();
         SetupBallsDropdown();
 

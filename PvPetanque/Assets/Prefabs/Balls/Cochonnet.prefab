@@ -162,6 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fc26c16119d4e44183c64c5fbf01c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sandCollider: {fileID: 0}
+  onGround: 0
+  depth: 0
   maxDepth: 0.2
   dragMultiplier: 1.5
   depthToDrag:

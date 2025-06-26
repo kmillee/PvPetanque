@@ -8,13 +8,17 @@ public class SandFriction : MonoBehaviour
     private static readonly RandomGaussian rng = new RandomGaussian();
     
     private Rigidbody rb;
+
+    [SerializeField] private GameObject sandCollider;
     
-    private bool onGround = false;
+    [SerializeField] private bool onGround = false;
     private Vector3 groundNormal;
     private const int MaxContactPoint = 4;
     private ContactPoint[] contactPoints = new ContactPoint[MaxContactPoint];
+
+    private int stoppingMechanismCounter = 0;
     
-    private float depth = 0f;
+    [SerializeField] private float depth = 0f;
     public float Depth
     {
         get => depth;
@@ -148,7 +152,6 @@ public class SandFriction : MonoBehaviour
         if (onGround)
         {
             HandleFriction();
-            
         }
         
         UpdateDamping();
@@ -158,10 +161,19 @@ public class SandFriction : MonoBehaviour
         float limit = -Mathf.Log(1 - Depth / maxDepth) * velocityLimitParameter;
         if (velocity < limit)
         {
-            rb.linearDamping = float.PositiveInfinity;
-            rb.angularDamping = float.PositiveInfinity;
+            stoppingMechanismCounter++;
+            if (stoppingMechanismCounter >= 5)
+            {
+                rb.linearDamping = float.PositiveInfinity;
+                rb.angularDamping = float.PositiveInfinity;
+            }
         }
+        else { stoppingMechanismCounter = 0; }
 
+        if (sandCollider)
+        {
+            sandCollider.transform.position = transform.position - Vector3.down * Depth;
+        }
     }
 
     
@@ -185,13 +197,14 @@ public class SandFriction : MonoBehaviour
     {
         if (other.collider.CompareTag("Ground"))
         {
+            onGround = true;
             groundNormal = Vector3.zero;
             int contactCount = Mathf.Min(other.GetContacts(contactPoints), MaxContactPoint);
             for (int it = 0; it < contactCount; it++)
             {
                 ContactPoint contact = contactPoints[it];
                 groundNormal += contact.normal;
-            }
+            } 
 
             groundNormal /= contactCount;
         }

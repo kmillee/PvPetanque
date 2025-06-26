@@ -1,5 +1,58 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &431547225867144956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8193777971367783783}
+  - component: {fileID: 7751510853656723373}
+  m_Layer: 7
+  m_Name: BallSandCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8193777971367783783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431547225867144956}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3085738522922131836}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &7751510853656723373
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431547225867144956}
+  m_Material: {fileID: 13400000, guid: 5ed238205fbd15849be5e239875287da, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3676687295103538163
 GameObject:
   m_ObjectHideFlags: 0
@@ -15,7 +68,7 @@ GameObject:
   - component: {fileID: 3464256359069649922}
   - component: {fileID: 3559171676195614292}
   - component: {fileID: 6542783959085311193}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,10 +84,11 @@ Transform:
   m_GameObject: {fileID: 3676687295103538163}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.12, y: 2.41, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8193777971367783783}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8267283103071344257
@@ -162,6 +216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fc26c16119d4e44183c64c5fbf01c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sandCollider: {fileID: 431547225867144956}
+  onGround: 0
+  depth: 0
   maxDepth: 0.2
   dragMultiplier: 1
   depthToDrag:
@@ -206,29 +263,47 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0.1
-      inSlope: 1.584905
-      outSlope: 1.584905
+      inSlope: 5.183983
+      outSlope: 5.183983
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.15
+      outWeight: 0.0413224
     - serializedVersion: 3
-      time: 0.6416626
-      value: 0.997879
-      inSlope: -0.0006806222
-      outSlope: -0.0006806222
+      time: 0.23945627
+      value: 0.9543774
+      inSlope: 0.60004437
+      outSlope: 0.60004437
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.31666672
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1
-      value: 0.4
-      inSlope: -0.122486725
-      outSlope: -0.122486725
+      time: 0.50416565
+      value: 0.9999962
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.5083333
+      inWeight: 0.33333334
+      outWeight: 0.462186
+    - serializedVersion: 3
+      time: 0.7132798
+      value: 0.92520595
+      inSlope: -1.2717094
+      outSlope: -1.2717094
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.40424195
+      inSlope: -0.20251659
+      outSlope: -0.20251659
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.38333333
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

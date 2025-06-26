@@ -16,5 +16,5 @@ MonoBehaviour:
   pageTitle: Thanks
   pageText: "This project was carried out as part of our Seminar Project course in
     T\xE9l\xE9com Paris.\n\nTeam members: Camille, Estelle, Max & Toan"
-  pageImage: {fileID: 21300000, guid: b994c286e57d3f643a63370e218ef147, type: 3}
+  pageImage: {fileID: 0}
   pageVideo: {fileID: 32900000, guid: 571757bc2e851124c893d965ca2321ab, type: 3}
